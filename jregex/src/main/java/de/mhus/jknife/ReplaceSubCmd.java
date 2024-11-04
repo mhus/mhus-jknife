@@ -4,26 +4,26 @@ import de.mhus.commons.M;
 import de.mhus.commons.tools.MFile;
 import lombok.extern.java.Log;
 import picocli.CommandLine;
-import picocli.CommandLine.Parameters;
 
 import java.io.File;
 import java.util.concurrent.Callable;
+import java.util.regex.PatternSyntaxException;
 
 @Log
-@CommandLine.Command(name = "matches", description = "Regex Matches", subcommands = CommandLine.HelpCommand.class)
-public class MatchesSubCmd implements Callable<Integer> {
+@CommandLine.Command(name = "replace", description = "Regex Replace", subcommands = CommandLine.HelpCommand.class)
+public class ReplaceSubCmd implements Callable<Integer> {
 
-    @Parameters(index = "0")
+    @CommandLine.Parameters(index = "0")
     private String text;
 
-    @Parameters(index = "1")
+    @CommandLine.Parameters(index = "1")
     private String pattern;
+
+    @CommandLine.Parameters(index = "2")
+    private String replacement;
 
     @CommandLine.Option(names = { "-v", "--verbose" })
     private boolean verbose = false;
-
-    @CommandLine.Option(names = { "-o", "--output" })
-    private boolean output = false;
 
     @CommandLine.Option(names = { "-t", "--text" }, description = "Text file or '-' for stdin")
     private String textFile;
@@ -48,12 +48,18 @@ public class MatchesSubCmd implements Callable<Integer> {
             LOGGER.info("String: " + text);
             LOGGER.info("Pattern: " + pattern);
         }
-        var result = text.matches(pattern);
-        if (verbose) {
-            LOGGER.info("Result: " + result);
+        try {
+            var result = text.replaceAll(pattern, replacement);
+            if (verbose) {
+                LOGGER.info("Result: " + result);
+            }
+            System.out.println(result);
+            return 0;
+        } catch (PatternSyntaxException e) {
+            if (verbose) {
+                LOGGER.warning(e.toString());
+            }
+            return 1;
         }
-        if (output)
-            System.out.println(String.valueOf(result));
-        return result ? 0 : 1;
     }
 }
