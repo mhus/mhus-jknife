@@ -7,6 +7,8 @@ import picocli.CommandLine;
 
 import java.io.File;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 @Log
@@ -17,7 +19,7 @@ public class ReplaceSubCmd implements Callable<Integer> {
     private String text;
 
     @CommandLine.Parameters(index = "1")
-    private String pattern;
+    private String regex;
 
     @CommandLine.Parameters(index = "2")
     private String replacement;
@@ -30,6 +32,10 @@ public class ReplaceSubCmd implements Callable<Integer> {
 
     @CommandLine.Option(names = { "-c", "--charset" }, description = "Text file charset")
     private String charSet = M.CHARSET_UTF_8;
+
+    @CommandLine.Option(names = { "-f",
+            "--flags" }, description = "Flags comma separated: CASE_INSENSITIVE, MULTILINE, DOTALL, UNICODE_CASE, CANON_EQ, UNIX_LINES, LITERAL, UNICODE_CHARACTER_CLASS and COMMENTS")
+    private String flagsStr = "";
 
     @Override
     public Integer call() throws Exception {
@@ -44,12 +50,16 @@ public class ReplaceSubCmd implements Callable<Integer> {
                 text = MFile.readFile(file, charSet);
             }
         }
+        int flags = RegexUtil.getFlagsInteger(flagsStr);
         if (verbose) {
             LOGGER.info("String: " + text);
-            LOGGER.info("Pattern: " + pattern);
+            LOGGER.info("Pattern: " + regex);
+            LOGGER.info("Flags: " + flags);
         }
         try {
-            var result = text.replaceAll(pattern, replacement);
+            Pattern pattern = Pattern.compile(regex, flags);
+            Matcher matcher = pattern.matcher(text);
+            var result = text.replaceAll(regex, replacement);
             if (verbose) {
                 LOGGER.info("Result: " + result);
             }
@@ -62,4 +72,5 @@ public class ReplaceSubCmd implements Callable<Integer> {
             return 1;
         }
     }
+
 }

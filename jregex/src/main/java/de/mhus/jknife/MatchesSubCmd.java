@@ -8,6 +8,8 @@ import picocli.CommandLine.Parameters;
 
 import java.io.File;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Log
 @CommandLine.Command(name = "matches", description = "Regex Matches", subcommands = CommandLine.HelpCommand.class)
@@ -17,7 +19,7 @@ public class MatchesSubCmd implements Callable<Integer> {
     private String text;
 
     @Parameters(index = "1")
-    private String pattern;
+    private String regex;
 
     @CommandLine.Option(names = { "-v", "--verbose" })
     private boolean verbose = false;
@@ -30,6 +32,10 @@ public class MatchesSubCmd implements Callable<Integer> {
 
     @CommandLine.Option(names = { "-c", "--charset" }, description = "Text file charset")
     private String charSet = M.CHARSET_UTF_8;
+
+    @CommandLine.Option(names = { "-f",
+            "--flags" }, description = "Flags comma separated: CASE_INSENSITIVE, MULTILINE, DOTALL, UNICODE_CASE, CANON_EQ, UNIX_LINES, LITERAL, UNICODE_CHARACTER_CLASS and COMMENTS")
+    private String flagsStr = "";
 
     @Override
     public Integer call() throws Exception {
@@ -44,11 +50,15 @@ public class MatchesSubCmd implements Callable<Integer> {
                 text = MFile.readFile(file, charSet);
             }
         }
+        int flags = RegexUtil.getFlagsInteger(flagsStr);
         if (verbose) {
             LOGGER.info("String: " + text);
-            LOGGER.info("Pattern: " + pattern);
+            LOGGER.info("Pattern: " + regex);
+            LOGGER.info("Flags: " + flags + " (" + flagsStr + ")");
         }
-        var result = text.matches(pattern);
+        Pattern pattern = Pattern.compile(regex, flags);
+        Matcher matcher = pattern.matcher(text);
+        var result = matcher.matches();
         if (verbose) {
             LOGGER.info("Result: " + result);
         }
