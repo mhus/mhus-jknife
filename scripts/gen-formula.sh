@@ -68,7 +68,6 @@ for TOOL in "${TOOLS[@]}"; do
 class $CLASS < Formula
   desc "$(desc_of "$TOOL")"
   homepage "https://github.com/$REPO"
-  version "$VERSION"
 
   on_macos do
     if Hardware::CPU.intel?
