@@ -86,7 +86,12 @@ echo "### Setting version $VERSION"
 "$SCRIPT_DIR/set-version.sh" "$VERSION"
 
 git add -A
-git commit -m "release: $TAG"
+if [[ -z "$(git status --porcelain)" ]]; then
+    echo "### Nothing to commit, version already set"
+else
+    git commit -m "release: $TAG"
+fi
+git tag "$TAG"
 
 # --- confirm & push --------------------------------------------------------
 
