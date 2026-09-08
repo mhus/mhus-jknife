@@ -43,3 +43,6 @@ build/
 
 # generated release formulas
 dist/
+
+# stray native test binaries
+*.jxpathcmd
