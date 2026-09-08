@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Performs a release of mhus-jknife:
+# Performs a release of jknife:
 #
 #   1. checks preconditions (branch, clean & synced worktree)
 #   2. runs tests (mvn verify)
@@ -108,7 +108,7 @@ git push origin "$TAG"
 
 echo ""
 echo "### Done. Release build is running:"
-echo "    https://github.com/mhus/mhus-jknife/actions/workflows/release.yml"
+echo "    https://github.com/mhus/jknife/actions/workflows/release.yml"
 echo "    (or watch it with: gh run watch)"
 echo ""
 echo "### Next steps:"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Local build helper for mhus-jknife.
+# Local build helper for jknife.
 #
 # Usage: ./scripts/build.sh [options]
 #

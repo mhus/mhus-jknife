@@ -39,7 +39,7 @@ Watch the run:
 
 ```shell
 gh run watch
-# or: https://github.com/mhus/mhus-jknife/actions/workflows/release.yml
+# or: https://github.com/mhus/jknife/actions/workflows/release.yml
 ```
 
 ## Update the homebrew tap
@@ -54,7 +54,7 @@ Once the GitHub release exists, generate the formulas with correct checksums:
 Then in the tap repo (`mhus/homebrew-jknife`):
 
 ```shell
-cp <path-to-mhus-jknife>/dist/jregex.rb Formula/jregex.rb
+cp <path-to-jknife>/dist/jregex.rb Formula/jregex.rb
 git add Formula && git commit -m "jregex 0.1.0" && git push
 ```
 

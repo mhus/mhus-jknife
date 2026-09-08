@@ -19,7 +19,7 @@ OUT_DIR="${2:-dist}"
 # keep in sync with the tool modules
 TOOLS=(jregex jbase64 juuid jtime jperiod)
 
-REPO="mhus/mhus-jknife"
+REPO="mhus/jknife"
 TAG="v$VERSION"
 
 command -v gh >/dev/null || { echo "ERROR: gh CLI not found (https://cli.github.com/)" >&2; exit 1; }
@@ -52,7 +52,7 @@ desc_of() {
     juuid) echo "UUID generator and parser helper tool (v4, v7)" ;;
     jtime) echo "Timestamp converter helper tool (epoch, epoch-millis, ISO-8601)" ;;
     jperiod) echo "Period/duration converter and parser helper tool" ;;
-    *) echo "mhus-jknife tool $1" ;;
+    *) echo "jknife tool $1" ;;
     esac
 }
 

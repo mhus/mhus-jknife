@@ -51,4 +51,4 @@ brew install juuid
 ```
 
 Or download the binary for your platform from the
-[releases](https://github.com/mhus/mhus-jknife/releases).
+[releases](https://github.com/mhus/jknife/releases).

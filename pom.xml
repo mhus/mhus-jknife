@@ -20,12 +20,12 @@
 
     <modelVersion>4.0.0</modelVersion>
     <version>0.2.0</version>
-    <artifactId>mhus-jknife</artifactId>
+    <artifactId>jknife</artifactId>
     <groupId>de.mhus.jknife</groupId>
     <packaging>pom</packaging>
     <description>Java Developers Swiss Army Knife cli tools</description>
-    <url>https://github.com/mhus/mhus-jknife</url>
-    <name>mhus-jknife</name>
+    <url>https://github.com/mhus/jknife</url>
+    <name>jknife</name>
 
     <properties>
         <sonar.organization>mhus</sonar.organization>
@@ -53,8 +53,8 @@
         </license>
     </licenses>
     <scm>
-        <url>https://github.com/mhus/mhus-jknife</url>
-        <connection>scm:git:https://github.com/mhus/mhus-jknife/</connection>
+        <url>https://github.com/mhus/jknife</url>
+        <connection>scm:git:https://github.com/mhus/jknife/</connection>
         <tag>HEAD</tag>
     </scm>
     <developers>

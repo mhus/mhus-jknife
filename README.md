@@ -1,4 +1,4 @@
-# mhus-jknife
+# jknife
 
 Java Developer's Swiss Army Knife — small CLI helper tools written in Java, compiled to
 native binaries with [GraalVM native-image](https://www.graalvm.org/native-image/) and

@@ -1,6 +1,6 @@
 # Maintainer documentation
 
-Process and development documentation for mhus-jknife maintainers.
+Process and development documentation for jknife maintainers.
 User-facing tool documentation lives in [docs/](../docs) (GitHub Pages).
 
 | Document                          | Content                                              |

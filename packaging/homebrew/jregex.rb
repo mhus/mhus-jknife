@@ -6,25 +6,25 @@
 
 class Jregex < Formula
   desc "Java regex helper tool (match, find, replace)"
-  homepage "https://github.com/mhus/mhus-jknife"
+  homepage "https://github.com/mhus/jknife"
   version "0.1.0"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/mhus/mhus-jknife/releases/download/v#{version}/jregex-#{version}-macos-x86_64.tar.gz"
+      url "https://github.com/mhus/jknife/releases/download/v#{version}/jregex-#{version}-macos-x86_64.tar.gz"
       sha256 "0000000000000000000000000000000000000000000000000000000000000000"
     else
-      url "https://github.com/mhus/mhus-jknife/releases/download/v#{version}/jregex-#{version}-macos-aarch64.tar.gz"
+      url "https://github.com/mhus/jknife/releases/download/v#{version}/jregex-#{version}-macos-aarch64.tar.gz"
       sha256 "0000000000000000000000000000000000000000000000000000000000000000"
     end
   end
 
   on_linux do
     if Hardware::CPU.intel?
-      url "https://github.com/mhus/mhus-jknife/releases/download/v#{version}/jregex-#{version}-linux-x86_64.tar.gz"
+      url "https://github.com/mhus/jknife/releases/download/v#{version}/jregex-#{version}-linux-x86_64.tar.gz"
       sha256 "0000000000000000000000000000000000000000000000000000000000000000"
     else
-      url "https://github.com/mhus/mhus-jknife/releases/download/v#{version}/jregex-#{version}-linux-aarch64.tar.gz"
+      url "https://github.com/mhus/jknife/releases/download/v#{version}/jregex-#{version}-linux-aarch64.tar.gz"
       sha256 "0000000000000000000000000000000000000000000000000000000000000000"
     end
   end
