@@ -22,7 +22,7 @@
     <parent>
         <artifactId>mhus-jknife</artifactId>
         <groupId>de.mhus.jknife</groupId>
-        <version>0.1.0</version>
+        <version>0.2.0</version>
     </parent>
     <artifactId>jregex</artifactId>
     <packaging>jar</packaging>
