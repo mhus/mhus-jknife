@@ -40,8 +40,35 @@ jobs:
           ./scripts/set-version.sh "$VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Build native binaries
-        run: mvn -B -Pnative -DskipTests package
+      - name: Build native binaries (JVM tests + native tests + binaries)
+        run: mvn -B -Pnative package
+
+      - name: Smoke test the binaries
+        run: |
+          set -e
+          VERSION=${GITHUB_REF_NAME#v}
+          jregex=jregex/target/jregex-$VERSION
+          jbase64=jbase64/target/jbase64-$VERSION
+          juuid=juuid/target/juuid-$VERSION
+          jtime=jtime/target/jtime-$VERSION
+
+          $jregex --version
+          echo 'a 12 b 345 c' | $jregex find '\d+' | grep -qx 12
+          echo 'a 12 b 345 c' | $jregex find '\d+' | grep -qx 345
+          $jregex match -q '^a+c$' aaac
+
+          $jbase64 --version
+          echo 'hello world' | $jbase64 encode | $jbase64 decode | grep -qx 'hello world'
+
+          $juuid --version
+          $juuid gen | grep -qE '^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
+          $juuid parse "$($juuid gen -t 7)" | grep -qx 'version: 7'
+
+          $jtime --version
+          $jtime parse 1725787000 | grep -qx 'epoch: 1725787000'
+          $jtime now --epoch | grep -qE '^[0-9]{10}$'
+
+          echo "smoke tests OK"
 
       - name: Package artifacts
         run: |

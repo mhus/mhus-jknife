@@ -45,6 +45,35 @@ done
 
 command -v mvn >/dev/null || { echo "ERROR: mvn not found" >&2; exit 1; }
 
+fail() {
+    echo "ERROR: smoke test failed: $*" >&2
+    exit 1
+}
+
+# basic functional check per tool, called with the binary path and the module name
+smoke_test() {
+    local bin="$1" tool="$2"
+    "$bin" --version >/dev/null 2>&1 || fail "$tool --version"
+    case "$tool" in
+    jregex)
+        echo 'a 12 b 345 c' | "$bin" find '\d+' | grep -qx 12 || fail "$tool find"
+        "$bin" match -q '^a+c$' aaac || fail "$tool match"
+        ;;
+    jbase64)
+        echo 'hello world' | "$bin" encode | "$bin" decode | grep -qx 'hello world' || fail "$tool encode/decode"
+        ;;
+    juuid)
+        "$bin" gen | grep -qE '^[0-9a-f-]{36}$' || fail "$tool gen"
+        "$bin" parse "$($bin gen -t 7)" | grep -qx 'version: 7' || fail "$tool parse"
+        ;;
+    jtime)
+        "$bin" parse 1725787000 | grep -qx 'epoch: 1725787000' || fail "$tool parse"
+        "$bin" now --epoch | grep -qE '^[0-9]{10}$' || fail "$tool now"
+        ;;
+    esac
+    echo "    $tool OK"
+}
+
 MVN_ARGS=(-B)
 if [[ "$CLEAN" == true ]]; then
     MVN_ARGS+=("clean")
@@ -68,8 +97,8 @@ if [[ "$NATIVE" == true ]]; then
     }
 
     echo ""
-    echo "### Native build (mvn -Pnative package, tests already run above)"
-    mvn -B -Pnative -DskipTests package
+    echo "### Native build incl. native tests (mvn -Pnative package)"
+    mvn -B -Pnative package
 
     echo ""
     echo "### Native binaries:"
@@ -78,6 +107,15 @@ if [[ "$NATIVE" == true ]]; then
             [[ -f "$bin" && -x "$bin" ]] || continue
             size="$(du -h "$bin" | cut -f1)"
             echo "    $bin ($size)"
+        done
+    done
+
+    echo ""
+    echo "### Smoke tests:"
+    find . -mindepth 2 -maxdepth 2 -name pom.xml -exec dirname {} \; | sed 's|^\./||' | sort | while read -r dir; do
+        for bin in "$dir"/target/"$dir"-*; do
+            [[ -f "$bin" && -x "$bin" ]] || continue
+            smoke_test "$bin" "$dir"
         done
     done
 fi

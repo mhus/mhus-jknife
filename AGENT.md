@@ -41,6 +41,9 @@ mvn -Pnative package      # native binaries (requires local GraalVM, current pla
   `2` error. Cover them in tests (see `JRegexCliTest`).
 - Dependencies: pure JDK + picocli only, keep it minimal — smaller binaries, fewer
   native-image problems. Shared code goes into `jknife-shared`.
+- Testing: the `native` profile runs the full JUnit suite both on the JVM and as a
+  GraalVM native test image (`mvn -Pnative test`); `scripts/build.sh --native` and the
+  release workflow additionally smoke-test the built binaries. Keep all three green.
 - Versions: never edit `pom.xml` versions or `VERSION` constants by hand when
   preparing a release — use `scripts/set-version.sh` (via `scripts/release.sh`).
 - Homebrew formulas in the tap are **generated** by `scripts/gen-formula.sh`;

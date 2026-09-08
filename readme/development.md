@@ -46,6 +46,23 @@ Notes:
   the reflection configuration for `native-image`. When adding libraries with
   reflection, check the native build early.
 
+## Native tests
+
+The `native` profile does not only build the binaries — it also runs the **complete
+JUnit test suite as a native test image** (`test-native` execution of the
+native-maven-plugin):
+
+```shell
+mvn -Pnative test          # JVM tests + native tests
+```
+
+The same tests then run inside a GraalVM native binary, which catches
+reflection/resource/runtime problems that only occur in native images.
+
+On top of that, both `scripts/build.sh --native` and the release workflow run **smoke
+tests against the built binaries** (startup, `--version` and one functional command per
+tool), so a broken binary can never reach a GitHub release.
+
 ## Project structure
 
 ```

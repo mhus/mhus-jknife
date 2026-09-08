@@ -29,9 +29,11 @@ The [release workflow](../.github/workflows/release.yml) starts automatically on
 pushed `v*` tag and, per platform (macOS aarch64/x86_64, Linux x86_64/aarch64):
 
 1. sets the release version (`scripts/set-version.sh`)
-2. builds the native binaries (`mvn -Pnative package`)
+2. runs all tests **twice**: on the JVM and as GraalVM native test images
+   (`mvn -Pnative package`)
 3. packs each tool as `<tool>-<version>-<rid>.tar.gz` plus `.sha256` checksum file
-4. attaches everything to the GitHub release
+4. runs smoke tests against the built binaries (startup, functional commands)
+5. attaches everything to the GitHub release
 
 Watch the run:
 
