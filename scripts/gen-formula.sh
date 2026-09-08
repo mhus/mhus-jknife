@@ -29,7 +29,7 @@ WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
 echo "### Downloading release assets of $TAG"
-gh release download "$TAG" --repo "$REPO" --dir "$WORK" --clobber
+gh release download "$TAG" --repo "$REPO" --dir "$WORK" --clobber --pattern '*.tar.gz'
 
 sha_of() {
     local tool="$1" rid="$2"
@@ -107,4 +107,4 @@ echo ""
 echo "### Next steps:"
 echo "    1. copy the formula(s) into the tap repo: cp $OUT_DIR/*.rb <tap>/Formula/"
 echo "    2. commit & push the tap"
-echo "    3. verify: brew tap $REPO_HOMEBREW && brew install $TOOL && $TOOL --version"
+echo "    3. verify: brew tap mhus/jknife && brew install mhus/jknife/$TOOL && $TOOL --version"
