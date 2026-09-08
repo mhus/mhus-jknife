@@ -19,7 +19,8 @@ juuid gen -n 5               # five UUIDs, one per line
 juuid gen --upper            # uppercase
 juuid gen -t 7               # UUIDv7: time sortable (RFC 9562)
 
-juuid gen -t 7 | juuid parse /dev/stdin   # inspect what v7 contains
+juuid gen -t 7                                  # v7 generation
+juuid parse "$(juuid gen -t 7)"                 # inspect what v7 contains
 juuid parse 0190b5c0-6f7f-7a3e-8d2c-1f2e3a4b5c6d
 # value: 0190b5c0-6f7f-7a3e-8d2c-1f2e3a4b5c6d
 # version: 7
