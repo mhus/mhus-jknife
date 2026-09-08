@@ -9,6 +9,16 @@
 
 ## Build & test
 
+The easy way is the build script (all options: `./scripts/build.sh --help`):
+
+```shell
+./scripts/build.sh                  # compile + run all tests (incremental)
+./scripts/build.sh --clean --native # full build incl. native binaries
+./scripts/build.sh --fast           # skip tests
+```
+
+Or plain maven:
+
 ```shell
 # compile + run all tests
 mvn verify

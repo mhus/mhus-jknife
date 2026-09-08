@@ -53,6 +53,12 @@ mvn -Pnative package      # native binaries (requires local GraalVM, current pla
 ## Useful commands
 
 ```shell
+# quick check: compile + tests
+./scripts/build.sh
+
+# full build incl. native binaries for the current platform
+./scripts/build.sh --clean --native
+
 # run a tool from source while developing
 mvn -q -pl jregex exec:java -Dexec.mainClass=de.mhus.jknife.jregex.JRegexCmd -Dexec.args="--help"
 
