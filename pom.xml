@@ -70,6 +70,8 @@
         <module>jknife-shared</module>
         <module>jregex</module>
         <module>jbase64</module>
+        <module>juuid</module>
+        <module>jtime</module>
     </modules>
 
     <build>
