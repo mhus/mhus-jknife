@@ -1,0 +1,34 @@
+# mhus-jknife
+
+Java Developer's Swiss Army Knife — small CLI helper tools written in Java, compiled
+to native binaries with GraalVM and installable via [Homebrew](https://brew.sh).
+
+No Java runtime is needed — the tools are self-contained native binaries with instant
+startup.
+
+## Tools
+
+| Tool      | Description                                                    | Doc                                          |
+| --------- | -------------------------------------------------------------- | -------------------------------------------- |
+| `jregex`  | Java regex helper: `match`, `find`, `replace`                   | [jregex.md](jregex.md)                       |
+| `jbase64` | Base64 encode/decode                                           | planned                                      |
+| `juuid`   | UUID generator (v4, v7, ...)                                    | planned                                      |
+| `jtime`   | Timestamp converter (epoch <-> ISO-8601, parse/format)         | planned                                      |
+| `jperiod` | Period/duration converter and parser                            | planned                                      |
+
+## Install
+
+```shell
+brew tap mhus/jknife
+brew install jregex
+```
+
+Binaries for macOS (aarch64, x86_64) and Linux (x86_64, aarch64) are attached to the
+[GitHub releases](https://github.com/mhus/mhus-jknife/releases).
+
+## Links
+
+- [Homebrew tap](https://github.com/mhus/homebrew-jknife)
+- [Source & releases](https://github.com/mhus/mhus-jknife)
+- License: Apache License 2.0
+- Docs: <https://jknife.mhus.de>
