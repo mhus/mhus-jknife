@@ -46,7 +46,7 @@ jobs:
       - name: Package artifacts
         run: |
           # one tar.gz per tool, binary inside a 'bin' folder
-          for TOOL in jregex; do
+          for TOOL in jregex jbase64; do
             mkdir -p dist/$TOOL
             cp $TOOL/target/$TOOL-$VERSION dist/$TOOL/$TOOL
             tar -czf $TOOL-$VERSION-${{ matrix.rid }}.tar.gz -C dist $TOOL

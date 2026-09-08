@@ -60,4 +60,16 @@ public final class IOUtil {
     public static Charset charset(String name) {
         return name == null || name.isBlank() ? DEFAULT_CHARSET : Charset.forName(name);
     }
+
+    /**
+     * Read raw bytes from a file or from stdin (if file is null, empty or "-").
+     *
+     * @param fileOrStdin
+     *            file path or "-" for stdin
+     */
+    public static byte[] readBytes(String fileOrStdin) throws IOException {
+        if (fileOrStdin == null || fileOrStdin.isBlank() || STDIN.equals(fileOrStdin))
+            return System.in.readAllBytes();
+        return Files.readAllBytes(Path.of(fileOrStdin));
+    }
 }

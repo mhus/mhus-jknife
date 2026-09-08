@@ -67,6 +67,14 @@ class JRegexCliTest {
     }
 
     @Test
+    void textFile() throws Exception {
+        var file = java.nio.file.Files.createTempFile("jregex", ".txt");
+        java.nio.file.Files.writeString(file, "Hello World");
+        assertThat(run("match", "-t", file.toString(), "Hello World").exitCode()).isZero();
+        assertThat(run("match", "-t", file.toString(), "Hello").exitCode()).isEqualTo(1);
+    }
+
+    @Test
     void invalidRegex() {
         assertThat(run("match", "[", "text").exitCode()).isEqualTo(2);
     }

@@ -12,7 +12,7 @@ with instant startup.
 | Tool      | Description                                              | Status  |
 | --------- | -------------------------------------------------------- | ------- |
 | `jregex`  | Java regex helper: `match`, `find`, `replace`            | ready   |
-| `jbase64` | Base64 encode/decode                                     | planned |
+| `jbase64` | Base64 encode/decode                                     | ready   |
 | `juuid`   | UUID generator (v4, v7, ...)                             | planned |
 | `jtime`   | Timestamp converter (epoch <-> ISO-8601, parse/format)   | planned |
 | `jperiod` | Period/duration converter and parser                     | planned |

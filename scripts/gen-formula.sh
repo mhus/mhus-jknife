@@ -17,7 +17,7 @@ VERSION="${1:?Usage: gen-formula.sh <version> [output-dir]}"
 OUT_DIR="${2:-dist}"
 
 # keep in sync with the tool modules
-TOOLS=(jregex)
+TOOLS=(jregex jbase64)
 
 REPO="mhus/mhus-jknife"
 TAG="v$VERSION"
@@ -48,6 +48,7 @@ sha_of() {
 desc_of() {
     case "$1" in
     jregex) echo "Java regex helper tool (match, find, replace)" ;;
+    jbase64) echo "Base64 encode/decode helper tool" ;;
     *) echo "mhus-jknife tool $1" ;;
     esac
 }
