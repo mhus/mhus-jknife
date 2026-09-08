@@ -22,7 +22,7 @@
     <parent>
         <artifactId>mhus-jknife</artifactId>
         <groupId>de.mhus.jknife</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.1.0</version>
     </parent>
     <artifactId>jknife-shared</artifactId>
     <packaging>jar</packaging>
