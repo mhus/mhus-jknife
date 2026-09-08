@@ -14,7 +14,7 @@ startup.
 | `jbase64` | Base64 encode/decode                                           | [jbase64.md](jbase64.md)                     |
 | `juuid`   | UUID generator (v4, v7) + parser                                | [juuid.md](juuid.md)                         |
 | `jtime`   | Timestamp converter (epoch <-> ISO-8601, parse/format)         | [jtime.md](jtime.md)                         |
-| `jperiod` | Period/duration converter and parser                            | planned                                      |
+| `jperiod` | Period/duration converter and parser                            | [jperiod.md](jperiod.md)                     |
 
 ## Install
 

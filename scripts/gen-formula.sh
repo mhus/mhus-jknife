@@ -17,7 +17,7 @@ VERSION="${1:?Usage: gen-formula.sh <version> [output-dir]}"
 OUT_DIR="${2:-dist}"
 
 # keep in sync with the tool modules
-TOOLS=(jregex jbase64 juuid jtime)
+TOOLS=(jregex jbase64 juuid jtime jperiod)
 
 REPO="mhus/mhus-jknife"
 TAG="v$VERSION"
@@ -51,6 +51,7 @@ desc_of() {
     jbase64) echo "Base64 encode/decode helper tool" ;;
     juuid) echo "UUID generator and parser helper tool (v4, v7)" ;;
     jtime) echo "Timestamp converter helper tool (epoch, epoch-millis, ISO-8601)" ;;
+    jperiod) echo "Period/duration converter and parser helper tool" ;;
     *) echo "mhus-jknife tool $1" ;;
     esac
 }

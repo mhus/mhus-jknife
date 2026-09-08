@@ -70,6 +70,10 @@ smoke_test() {
         "$bin" parse 1725787000 | grep -qx 'epoch: 1725787000' || fail "$tool parse"
         "$bin" now --epoch | grep -qE '^[0-9]{10}$' || fail "$tool now"
         ;;
+    jperiod)
+        "$bin" parse -u m 2h30m | grep -qx 150 || fail "$tool parse"
+        "$bin" add -u h 2h30m 45m | grep -qx 3.25 || fail "$tool add"
+        ;;
     esac
     echo "    $tool OK"
 }

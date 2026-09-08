@@ -72,6 +72,7 @@
         <module>jbase64</module>
         <module>juuid</module>
         <module>jtime</module>
+        <module>jperiod</module>
     </modules>
 
     <build>

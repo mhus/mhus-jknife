@@ -51,6 +51,7 @@ jobs:
           jbase64=jbase64/target/jbase64-$VERSION
           juuid=juuid/target/juuid-$VERSION
           jtime=jtime/target/jtime-$VERSION
+          jperiod=jperiod/target/jperiod-$VERSION
 
           $jregex --version
           echo 'a 12 b 345 c' | $jregex find '\d+' | grep -qx 12
@@ -68,12 +69,16 @@ jobs:
           $jtime parse 1725787000 | grep -qx 'epoch: 1725787000'
           $jtime now --epoch | grep -qE '^[0-9]{10}$'
 
+          $jperiod --version
+          $jperiod parse -u m 2h30m | grep -qx 150
+          $jperiod add -u h 2h30m 45m | grep -qx 3.25
+
           echo "smoke tests OK"
 
       - name: Package artifacts
         run: |
           # one tar.gz per tool, binary inside a 'bin' folder
-          for TOOL in jregex jbase64 juuid jtime; do
+          for TOOL in jregex jbase64 juuid jtime jperiod; do
             mkdir -p dist/$TOOL
             cp $TOOL/target/$TOOL-$VERSION dist/$TOOL/$TOOL
             tar -czf $TOOL-$VERSION-${{ matrix.rid }}.tar.gz -C dist $TOOL
