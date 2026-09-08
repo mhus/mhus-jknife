@@ -74,6 +74,17 @@ smoke_test() {
         "$bin" parse -u m 2h30m | grep -qx 150 || fail "$tool parse"
         "$bin" add -u h 2h30m 45m | grep -qx 3.25 || fail "$tool add"
         ;;
+    jjson)
+        "$bin" validate '{"a":1}' || fail "$tool validate"
+        "$bin" get a.b[1] '{"a":{"b":[10,20]}}' | grep -qx 20 || fail "$tool get"
+        ;;
+    jyaml)
+        "$bin" tojson 'a: 1' | grep -qx '{"a":1}' || fail "$tool tojson"
+        ;;
+    jxpath)
+        "$bin" select 'count(//b)' '<a><b/><b/></a>' | grep -qx 2 || fail "$tool select"
+        "$bin" exists -q '//b' '<a><b/></a>' || fail "$tool exists"
+        ;;
     esac
     echo "    $tool OK"
 }

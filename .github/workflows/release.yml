@@ -52,6 +52,9 @@ jobs:
           juuid=juuid/target/juuid-$VERSION
           jtime=jtime/target/jtime-$VERSION
           jperiod=jperiod/target/jperiod-$VERSION
+          jjson=jjson/target/jjson-$VERSION
+          jyaml=jyaml/target/jyaml-$VERSION
+          jxpath=jxpath/target/jxpath-$VERSION
 
           $jregex --version
           echo 'a 12 b 345 c' | $jregex find '\d+' | grep -qx 12
@@ -73,12 +76,23 @@ jobs:
           $jperiod parse -u m 2h30m | grep -qx 150
           $jperiod add -u h 2h30m 45m | grep -qx 3.25
 
+          $jjson --version
+          $jjson validate '{"a":1}'
+          $jjson get a.b[1] '{"a":{"b":[10,20]}}' | grep -qx 20
+
+          $jyaml --version
+          $jyaml tojson 'a: 1' | grep -qx '{"a":1}'
+
+          $jxpath --version
+          $jxpath select count\(//b\) '<a><b/><b/></a>' | grep -qx 2
+          $jxpath exists -q '//b' '<a><b/></a>'
+
           echo "smoke tests OK"
 
       - name: Package artifacts
         run: |
           # one tar.gz per tool, binary inside a 'bin' folder
-          for TOOL in jregex jbase64 juuid jtime jperiod; do
+          for TOOL in jregex jbase64 juuid jtime jperiod jjson jyaml jxpath; do
             mkdir -p dist/$TOOL
             cp $TOOL/target/$TOOL-$VERSION dist/$TOOL/$TOOL
             tar -czf $TOOL-$VERSION-${{ matrix.rid }}.tar.gz -C dist $TOOL

@@ -15,6 +15,9 @@ startup.
 | `juuid`   | UUID generator (v4, v7) + parser                                | [juuid.md](juuid.md)                         |
 | `jtime`   | Timestamp converter (epoch <-> ISO-8601, parse/format)         | [jtime.md](jtime.md)                         |
 | `jperiod` | Period/duration converter and parser                            | [jperiod.md](jperiod.md)                     |
+| `jjson`   | JSON helper (validate, pretty, compact, get)                    | [jjson.md](jjson.md)                         |
+| `jyaml`   | YAML helper (validate, tojson)                                  | [jyaml.md](jyaml.md)                         |
+| `jxpath`  | XML xpath helper (select, exists)                                | [jxpath.md](jxpath.md)                       |
 
 ## Install
 

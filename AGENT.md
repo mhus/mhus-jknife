@@ -39,11 +39,17 @@ mvn -Pnative package      # native binaries (requires local GraalVM, current pla
   release workflow artifact loop, `gen-formula.sh` TOOLS list, README + docs page).
 - CLI exit codes are part of the contract: `0` success/match, `1` no match,
   `2` error. Cover them in tests (see `JRegexCliTest`).
-- Dependencies: pure JDK + picocli only, keep it minimal — smaller binaries, fewer
-  native-image problems. Shared code goes into `jknife-shared`.
+- Dependencies: JDK + picocli by default, keep it minimal — smaller binaries, fewer
+  native-image problems. Accepted exceptions: `jackson-databind` (jjson/jyaml, tree
+  model only — no pojo binding) and `snakeyaml` (jyaml, safe load). Shared code goes
+  into `jknife-shared`.
 - Testing: the `native` profile runs the full JUnit suite both on the JVM and as a
   GraalVM native test image (`mvn -Pnative test`); `scripts/build.sh --native` and the
   release workflow additionally smoke-test the built binaries. Keep all three green.
+- When adding reflection-heavy libraries, record the needed metadata with the
+  native-image agent (harness pattern in `jxpath`, details in
+  [readme/development.md](readme/development.md)) and commit the generated
+  `META-INF/native-image/.../reachability-metadata.json` to the tool module.
 - Versions: never edit `pom.xml` versions or `VERSION` constants by hand when
   preparing a release — use `scripts/set-version.sh` (via `scripts/release.sh`).
 - Homebrew formulas in the tap are **generated** by `scripts/gen-formula.sh`;

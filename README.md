@@ -16,6 +16,9 @@ with instant startup.
 | `juuid`   | UUID generator (v4, v7) + parser                            | ready   |
 | `jtime`   | Timestamp converter (epoch <-> ISO-8601, parse/format)     | ready   |
 | `jperiod` | Period/duration converter and parser                        | ready   |
+| `jjson`   | JSON helper (validate, pretty, compact, get)               | ready   |
+| `jyaml`   | YAML helper (validate, tojson)                             | ready   |
+| `jxpath`  | XML XPath helper (select, exists)                          | ready   |
 
 Tool documentation: [docs/](docs/) — also served as GitHub Pages at <https://jknife.mhus.de>.
 

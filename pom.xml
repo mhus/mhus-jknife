@@ -33,6 +33,8 @@
 
         <maven.java.version>21</maven.java.version>
         <picocli.version>4.7.6</picocli.version>
+        <jackson.version>2.18.2</jackson.version>
+        <snakeyaml.version>2.3</snakeyaml.version>
         <junit.version>5.11.0</junit.version>
         <assertj.version>3.26.3</assertj.version>
 
@@ -73,6 +75,9 @@
         <module>juuid</module>
         <module>jtime</module>
         <module>jperiod</module>
+        <module>jjson</module>
+        <module>jyaml</module>
+        <module>jxpath</module>
     </modules>
 
     <build>
@@ -128,14 +133,24 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>de.mhus.jknife</groupId>
-                <artifactId>jknife-shared</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>info.picocli</groupId>
                 <artifactId>picocli</artifactId>
                 <version>${picocli.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.mhus.jknife</groupId>
+                <artifactId>jknife-shared</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit</groupId>

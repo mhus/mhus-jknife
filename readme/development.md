@@ -63,6 +63,23 @@ On top of that, both `scripts/build.sh --native` and the release workflow run **
 tests against the built binaries** (startup, `--version` and one functional command per
 tool), so a broken binary can never reach a GitHub release.
 
+### Reflection-heavy libraries: the native-image agent
+
+When a tool uses a library that reflects heavily at runtime (like the JDK's internal
+xpath engine), native tests may fail with `UnsupportedFeatureError` or missing
+reflection entries. The way out is the **native-image agent**:
+
+1. write a harness that exercises ALL code paths (functions, error cases, locales) in
+   one JVM process — see `jxpath/src/test/java/.../NativeImageAgentHarness.java`
+2. run it with the agent:
+   `java -agentlib:native-image-agent=config-output-dir=<dir> -cp ... <Harness>`
+3. filter the generated `reachability-metadata.json` (keep the library internals, drop
+   ballast) and put it into the tool's
+   `src/main/resources/META-INF/native-image/de.mhus.jknife/<tool>/`
+4. resource bundles (`-H:IncludeResourceBundles` buildArg, all locale variants) may be
+   needed additionally — see `jxpath/pom.xml`
+5. verify with `mvn -Pnative test` and different locales (`LANG=de_DE.UTF-8 ...`)
+
 ## Project structure
 
 ```
