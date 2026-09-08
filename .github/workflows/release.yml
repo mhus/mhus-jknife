@@ -1,0 +1,68 @@
+name: release
+
+# Builds native binaries for all platforms and attaches them to the GitHub release.
+# Trigger with a tag: git tag v0.1.0 && git push origin v0.1.0
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest      # arm
+            rid: macos-aarch64
+          - os: macos-15-intel    # x86_64
+            rid: macos-x86_64
+          - os: ubuntu-latest     # x86_64
+            rid: linux-x86_64
+          - os: ubuntu-24.04-arm  # arm
+            rid: linux-aarch64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set release version
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          ./scripts/set-version.sh "$VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Build native binaries
+        run: mvn -B -Pnative -DskipTests package
+
+      - name: Package artifacts
+        run: |
+          # one tar.gz per tool, binary inside a 'bin' folder
+          for TOOL in jregex; do
+            mkdir -p dist/$TOOL
+            cp $TOOL/target/$TOOL-$VERSION dist/$TOOL/$TOOL
+            tar -czf $TOOL-$VERSION-${{ matrix.rid }}.tar.gz -C dist $TOOL
+            shasum -a 256 $TOOL-$VERSION-${{ matrix.rid }}.tar.gz > $TOOL-$VERSION-${{ matrix.rid }}.tar.gz.sha256
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-${{ matrix.rid }}
+          path: |
+            *.tar.gz
+            *.sha256
+
+      - name: Attach to GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.tar.gz
+            *.sha256

@@ -26,26 +26,32 @@
     </parent>
     <artifactId>jregex</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <name>jregex</name>
+    <description>Java regex helper tool (match, find, replace)</description>
 
     <properties>
-        <mainClass>de.mhus.jknife.JRegexCmd</mainClass>
+        <mainClass>de.mhus.jknife.jregex.JRegexCmd</mainClass>
         <appName>jregex</appName>
     </properties>
 
-
     <dependencies>
+        <dependency>
+            <groupId>de.mhus.jknife</groupId>
+            <artifactId>jknife-shared</artifactId>
+        </dependency>
         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>de.mhus.lib</groupId>
-            <artifactId>mhus-commons</artifactId>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -62,6 +68,7 @@
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
+                        <version>${native.plugin.version}</version>
                         <extensions>true</extensions>
                         <executions>
                             <execution>
@@ -71,22 +78,13 @@
                                 </goals>
                                 <phase>package</phase>
                             </execution>
-                            <execution>
-                                <id>release-native</id>
-                                <goals>
-                                    <goal>release</goal>
-                                </goals>
-                                <phase>release</phase>
-                            </execution>
                         </executions>
                         <configuration>
                             <imageName>${appName}-${project.version}</imageName>
                             <mainClass>${mainClass}</mainClass>
                             <buildArgs>
-                                <buildArg>--allow-incomplete-classpath</buildArg>
                                 <buildArg>--no-fallback</buildArg>
                                 <buildArg>-H:+ReportExceptionStackTraces</buildArg>
-                                <buildArg>--verbose</buildArg>
                             </buildArgs>
                         </configuration>
                     </plugin>
