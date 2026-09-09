@@ -18,6 +18,7 @@ startup.
 | `jjson`   | JSON helper (validate, pretty, compact, get)                    | [jjson.md](jjson.md)                         |
 | `jyaml`   | YAML helper (validate, tojson)                                  | [jyaml.md](jyaml.md)                         |
 | `jxpath`  | XML xpath helper (select, exists)                                | [jxpath.md](jxpath.md)                       |
+| `jllmrequest` | LLM request: text in, text out (openai, ollama)              | [jllmrequest.md](jllmrequest.md)             |
 
 ## Install
 

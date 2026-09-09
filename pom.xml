@@ -35,6 +35,8 @@
         <picocli.version>4.7.6</picocli.version>
         <jackson.version>2.18.2</jackson.version>
         <snakeyaml.version>2.3</snakeyaml.version>
+        <langchain4j.version>1.20.0</langchain4j.version>
+        <slf4j.version>2.0.16</slf4j.version>
         <junit.version>5.11.0</junit.version>
         <assertj.version>3.26.3</assertj.version>
 
@@ -78,6 +80,8 @@
         <module>jjson</module>
         <module>jyaml</module>
         <module>jxpath</module>
+        <module>jllm-shared</module>
+        <module>jllmrequest</module>
     </modules>
 
     <build>
@@ -148,8 +152,28 @@
                 <version>${snakeyaml.version}</version>
             </dependency>
             <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-open-ai</artifactId>
+                <version>${langchain4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-ollama</artifactId>
+                <version>${langchain4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-nop</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>de.mhus.jknife</groupId>
                 <artifactId>jknife-shared</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.mhus.jknife</groupId>
+                <artifactId>jllm-shared</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

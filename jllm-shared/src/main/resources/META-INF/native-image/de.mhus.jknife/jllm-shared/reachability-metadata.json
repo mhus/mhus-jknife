@@ -1,0 +1,1084 @@
+{
+  "reflection": [
+    {
+      "type": "apple.security.AppleProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.fasterxml.jackson.databind.ext.Java7SupportImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.AESCipher$General",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.ARCFOURCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.DESCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.DESedeCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.DHParameters",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.GaloisCounterMode$AESGCM",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.TlsMasterSecretGenerator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.http.client.jdk.JdkHttpClientBuilderFactory"
+    },
+    {
+      "type": "dev.langchain4j.model.ollama.FunctionCall"
+    },
+    {
+      "type": "dev.langchain4j.model.ollama.Message",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAdditionalFields",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getImages",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRole",
+          "parameterTypes": []
+        },
+        {
+          "name": "getThinking",
+          "parameterTypes": []
+        },
+        {
+          "name": "getToolCalls",
+          "parameterTypes": []
+        },
+        {
+          "name": "setContent",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRole",
+          "parameterTypes": [
+            "dev.langchain4j.model.ollama.Role"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.model.ollama.OllamaChatRequest",
+      "methods": [
+        {
+          "name": "getFormat",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeepAlive",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMessages",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOptions",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "getThink",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTools",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTruncate",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.model.ollama.OllamaChatResponse",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCreatedAt",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDone",
+          "parameterTypes": [
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "setMessage",
+          "parameterTypes": [
+            "dev.langchain4j.model.ollama.Message"
+          ]
+        },
+        {
+          "name": "setModel",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.model.ollama.Options",
+      "methods": [
+        {
+          "name": "getMainGPU",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMinP",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMirostat",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMirostatEta",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMirostatTau",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumBatch",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumCtx",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumGPU",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumKeep",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumPredict",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumThread",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRepeatLastN",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRepeatPenalty",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSeed",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStop",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTemperature",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTopK",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTopP",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTypicalP",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUseMmap",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.model.ollama.Role",
+      "methods": [
+        {
+          "name": "serialize",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.model.ollama.ToolCall"
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.AssistantMessage$Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "content",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.ChatCompletionChoice$Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "finishReason",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "index",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "message",
+          "parameterTypes": [
+            "dev.langchain4j.model.openai.internal.chat.AssistantMessage"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.ChatCompletionRequest",
+      "fields": [
+        {
+          "name": "frequencyPenalty"
+        },
+        {
+          "name": "functionCall"
+        },
+        {
+          "name": "functions"
+        },
+        {
+          "name": "logitBias"
+        },
+        {
+          "name": "logprobs"
+        },
+        {
+          "name": "maxCompletionTokens"
+        },
+        {
+          "name": "maxTokens"
+        },
+        {
+          "name": "messages"
+        },
+        {
+          "name": "metadata"
+        },
+        {
+          "name": "model"
+        },
+        {
+          "name": "n"
+        },
+        {
+          "name": "parallelToolCalls"
+        },
+        {
+          "name": "presencePenalty"
+        },
+        {
+          "name": "reasoningEffort"
+        },
+        {
+          "name": "responseFormat"
+        },
+        {
+          "name": "seed"
+        },
+        {
+          "name": "serviceTier"
+        },
+        {
+          "name": "stop"
+        },
+        {
+          "name": "store"
+        },
+        {
+          "name": "stream"
+        },
+        {
+          "name": "streamOptions"
+        },
+        {
+          "name": "temperature"
+        },
+        {
+          "name": "toolChoice"
+        },
+        {
+          "name": "tools"
+        },
+        {
+          "name": "topLogprobs"
+        },
+        {
+          "name": "topP"
+        },
+        {
+          "name": "user"
+        }
+      ],
+      "methods": [
+        {
+          "name": "customParameters",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.ChatCompletionResponse$Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "choices",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "created",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "model",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "usage",
+          "parameterTypes": [
+            "dev.langchain4j.model.openai.internal.shared.Usage"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.Delta$Builder"
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.FunctionCall$Builder"
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.LogProb$Builder"
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.LogProbs$Builder"
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.Message"
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.Role"
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.SystemMessage",
+      "fields": [
+        {
+          "name": "content"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "role"
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.ToolCall$Builder"
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.chat.UserMessage",
+      "fields": [
+        {
+          "name": "content"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "role"
+        }
+      ]
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.shared.CompletionTokensDetails$Builder"
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.shared.PromptTokensDetails$Builder"
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.shared.StreamOptions"
+    },
+    {
+      "type": "dev.langchain4j.model.openai.internal.shared.Usage$Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "completionTokens",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "promptTokens",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "totalTokens",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.beans.Introspector"
+    },
+    {
+      "type": "java.io.Serializable"
+    },
+    {
+      "type": "java.lang.Boolean",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "getBoolean",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Comparable"
+    },
+    {
+      "type": "java.lang.Double"
+    },
+    {
+      "type": "java.lang.Iterable"
+    },
+    {
+      "type": "java.lang.Number"
+    },
+    {
+      "type": "java.lang.Object"
+    },
+    {
+      "type": "java.lang.Object[]"
+    },
+    {
+      "type": "java.lang.String[]"
+    },
+    {
+      "type": "java.lang.constant.Constable"
+    },
+    {
+      "type": "java.lang.constant.ConstantDesc"
+    },
+    {
+      "type": "java.nio.file.Path"
+    },
+    {
+      "type": "java.nio.file.Paths"
+    },
+    {
+      "type": "java.security.AlgorithmParametersSpi"
+    },
+    {
+      "type": "java.security.KeyStoreSpi"
+    },
+    {
+      "type": "java.time.Duration"
+    },
+    {
+      "type": "java.time.Instant"
+    },
+    {
+      "type": "java.time.LocalDate"
+    },
+    {
+      "type": "java.time.LocalDateTime"
+    },
+    {
+      "type": "java.time.LocalTime"
+    },
+    {
+      "type": "java.time.MonthDay"
+    },
+    {
+      "type": "java.time.OffsetDateTime"
+    },
+    {
+      "type": "java.time.OffsetTime"
+    },
+    {
+      "type": "java.time.Period"
+    },
+    {
+      "type": "java.time.Year"
+    },
+    {
+      "type": "java.time.YearMonth"
+    },
+    {
+      "type": "java.time.ZoneId"
+    },
+    {
+      "type": "java.time.ZoneOffset"
+    },
+    {
+      "type": "java.time.ZonedDateTime"
+    },
+    {
+      "type": "java.util.AbstractCollection"
+    },
+    {
+      "type": "java.util.Collection"
+    },
+    {
+      "type": "java.util.Collections$UnmodifiableCollection"
+    },
+    {
+      "type": "java.util.Collections$UnmodifiableList"
+    },
+    {
+      "type": "java.util.Collections$UnmodifiableMap"
+    },
+    {
+      "type": "java.util.Collections$UnmodifiableRandomAccessList"
+    },
+    {
+      "type": "java.util.ImmutableCollections$AbstractImmutableCollection"
+    },
+    {
+      "type": "java.util.ImmutableCollections$AbstractImmutableList"
+    },
+    {
+      "type": "java.util.ImmutableCollections$ListN"
+    },
+    {
+      "type": "java.util.List"
+    },
+    {
+      "type": "java.util.Map"
+    },
+    {
+      "type": "java.util.RandomAccess"
+    },
+    {
+      "type": "org.slf4j.nop.NOPServiceProvider"
+    },
+    {
+      "type": "sun.security.pkcs12.PKCS12KeyStore",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.pkcs12.PKCS12KeyStore$DualFormatPKCS12",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.DSA$SHA224withDSA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.DSA$SHA256withDSA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.NativePRNG",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.SecureRandomParameters"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA2$SHA224",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA2$SHA256",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA5$SHA384",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA5$SHA512",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.X509Factory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.rsa.PSSParameters",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.rsa.RSAKeyFactory$Legacy",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.rsa.RSAPSSSignature",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.rsa.RSASignature$SHA224withRSA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.ssl.KeyManagerFactoryImpl$SunX509",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.ssl.SSLContextImpl$DefaultSSLContext",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.ssl.TrustManagerFactoryImpl$PKIXFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.AuthorityInfoAccessExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.AuthorityKeyIdentifierExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.BasicConstraintsExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.CRLDistributionPointsExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.CertificatePoliciesExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.ExtendedKeyUsageExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.KeyUsageExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.NetscapeCertTypeExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.PrivateKeyUsageExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.SubjectKeyIdentifierExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.text.resources.FormatData"
+    },
+    {
+      "type": "sun.text.resources.FormatData_en"
+    },
+    {
+      "type": "sun.text.resources.FormatData_en_US"
+    },
+    {
+      "type": "sun.text.resources.JavaTimeSupplementary"
+    },
+    {
+      "type": "sun.text.resources.cldr.FormatData"
+    },
+    {
+      "type": "sun.text.resources.cldr.FormatData_en"
+    },
+    {
+      "type": "sun.text.resources.cldr.FormatData_en_US"
+    },
+    {
+      "type": "sun.util.resources.cldr.CalendarData"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames_en"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames_en_US"
+    }
+  ],
+  "resources": [
+    {
+      "glob": "META-INF/services/com.sun.net.httpserver.spi.HttpServerProvider"
+    },
+    {
+      "glob": "META-INF/services/dev.langchain4j.http.client.HttpClientBuilderFactory"
+    },
+    {
+      "glob": "META-INF/services/dev.langchain4j.model.ollama.spi.OllamaChatModelBuilderFactory"
+    },
+    {
+      "glob": "META-INF/services/dev.langchain4j.model.openai.internal.spi.OpenAiClientBuilderFactory"
+    },
+    {
+      "glob": "META-INF/services/dev.langchain4j.model.openai.spi.OpenAiChatModelBuilderFactory"
+    },
+    {
+      "glob": "META-INF/services/dev.langchain4j.spi.json.ProviderJsonCodecFactory"
+    },
+    {
+      "glob": "META-INF/services/java.net.spi.InetAddressResolverProvider"
+    },
+    {
+      "glob": "META-INF/services/java.net.spi.URLStreamHandlerProvider"
+    },
+    {
+      "glob": "META-INF/services/java.nio.channels.spi.SelectorProvider"
+    },
+    {
+      "glob": "META-INF/services/java.time.zone.ZoneRulesProvider"
+    },
+    {
+      "glob": "META-INF/services/org.slf4j.spi.SLF4JServiceProvider"
+    },
+    {
+      "module": "java.base",
+      "glob": "jdk/internal/icu/impl/data/icudt76b/nfc.nrm"
+    }
+  ]
+}

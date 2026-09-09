@@ -85,6 +85,10 @@ smoke_test() {
         "$bin" select 'count(//b)' '<a><b/><b/></a>' | grep -qx 2 || fail "$tool select"
         "$bin" exists -q '//b' '<a><b/></a>' || fail "$tool exists"
         ;;
+    jllmrequest)
+        "$bin" --version >/dev/null || fail "$tool --version"
+        if "$bin" 'hi' >/dev/null 2>&1; then fail "$tool should fail without config"; fi
+        ;;
     esac
     echo "    $tool OK"
 }

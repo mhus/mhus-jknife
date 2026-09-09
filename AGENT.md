@@ -40,9 +40,10 @@ mvn -Pnative package      # native binaries (requires local GraalVM, current pla
 - CLI exit codes are part of the contract: `0` success/match, `1` no match,
   `2` error. Cover them in tests (see `JRegexCliTest`).
 - Dependencies: JDK + picocli by default, keep it minimal — smaller binaries, fewer
-  native-image problems. Accepted exceptions: `jackson-databind` (jjson/jyaml, tree
-  model only — no pojo binding) and `snakeyaml` (jyaml, safe load). Shared code goes
-  into `jknife-shared`.
+  native-image problems. Accepted exceptions: `jackson-databind` (jjson/jyaml/jllm, tree
+  model only — no pojo binding), `snakeyaml` (jyaml/jllm config) and the `langchain4j`
+  stack, which lives in `jllm-shared` (shared by the llm tool family: one binary per
+  command, e.g. `jllmrequest`). Shared code goes into `jknife-shared`.
 - Testing: the `native` profile runs the full JUnit suite both on the JVM and as a
   GraalVM native test image (`mvn -Pnative test`); `scripts/build.sh --native` and the
   release workflow additionally smoke-test the built binaries. Keep all three green.

@@ -20,6 +20,14 @@ with instant startup.
 | `jyaml`   | YAML helper (validate, tojson)                             | ready   |
 | `jxpath`  | XML XPath helper (select, exists)                          | ready   |
 
+### LLM family
+
+| Tool          | Description                                              | Status  |
+| ------------- | -------------------------------------------------------- | ------- |
+| `jllmrequest` | LLM request: text in, text out (openai, ollama)          | ready   |
+
+All LLM tools share the `jllm-shared` module (config loading, langchain4j factories).
+
 Tool documentation: [docs/](docs/) — also served as GitHub Pages at <https://jknife.mhus.de>.
 
 Quick example:
