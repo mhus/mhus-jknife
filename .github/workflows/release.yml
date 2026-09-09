@@ -55,7 +55,7 @@ jobs:
           jjson=jjson/target/jjson-$VERSION
           jyaml=jyaml/target/jyaml-$VERSION
           jxpath=jxpath/target/jxpath-$VERSION
-          jllmrequest=jllmrequest/target/jllmrequest-$VERSION
+          jllm=jllm/target/jllm-$VERSION
 
           $jregex --version
           echo 'a 12 b 345 c' | $jregex find '\d+' | grep -qx 12
@@ -88,15 +88,15 @@ jobs:
           $jxpath select count\(//b\) '<a><b/><b/></a>' | grep -qx 2
           $jxpath exists -q '//b' '<a><b/></a>'
 
-          $jllmrequest --version
-          if $jllmrequest 'hi' >/dev/null 2>&1; then echo "jllmrequest should fail without config"; exit 1; fi
+          $jllm --version
+          if $jllm request 'hi' >/dev/null 2>&1; then echo "jllm should fail without config"; exit 1; fi
 
           echo "smoke tests OK"
 
       - name: Package artifacts
         run: |
           # one tar.gz per tool, binary inside a 'bin' folder
-          for TOOL in jregex jbase64 juuid jtime jperiod jjson jyaml jxpath jllmrequest; do
+          for TOOL in jregex jbase64 juuid jtime jperiod jjson jyaml jxpath jllm; do
             mkdir -p dist/$TOOL
             cp $TOOL/target/$TOOL-$VERSION dist/$TOOL/$TOOL
             tar -czf $TOOL-$VERSION-${{ matrix.rid }}.tar.gz -C dist $TOOL

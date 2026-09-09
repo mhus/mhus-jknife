@@ -22,11 +22,12 @@ with instant startup.
 
 ### LLM family
 
-| Tool          | Description                                              | Status  |
-| ------------- | -------------------------------------------------------- | ------- |
-| `jllmrequest` | LLM request: text in, text out (openai, ollama)          | ready   |
+| Tool    | Description                                                 | Status  |
+| ------- | ----------------------------------------------------------- | ------- |
+| `jllm`  | LLM tool family (langchain4j): `request` = text in, text out | ready   |
 
-All LLM tools share the `jllm-shared` module (config loading, langchain4j factories).
+The llm family is a single binary with subcommands (so the ~55 MB langchain4j runtime
+is paid only once). New llm commands are added as subcommands to `jllm`.
 
 Tool documentation: [docs/](docs/) — also served as GitHub Pages at <https://jknife.mhus.de>.
 

@@ -80,8 +80,7 @@
         <module>jjson</module>
         <module>jyaml</module>
         <module>jxpath</module>
-        <module>jllm-shared</module>
-        <module>jllmrequest</module>
+        <module>jllm</module>
     </modules>
 
     <build>
@@ -169,11 +168,6 @@
             <dependency>
                 <groupId>de.mhus.jknife</groupId>
                 <artifactId>jknife-shared</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.mhus.jknife</groupId>
-                <artifactId>jllm-shared</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

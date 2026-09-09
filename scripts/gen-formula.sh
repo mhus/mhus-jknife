@@ -17,7 +17,7 @@ VERSION="${1:?Usage: gen-formula.sh <version> [output-dir]}"
 OUT_DIR="${2:-dist}"
 
 # keep in sync with the tool modules
-TOOLS=(jregex jbase64 juuid jtime jperiod jjson jyaml jxpath jllmrequest)
+TOOLS=(jregex jbase64 juuid jtime jperiod jjson jyaml jxpath jllm)
 
 REPO="mhus/jknife"
 TAG="v$VERSION"
@@ -55,7 +55,7 @@ desc_of() {
     jjson) echo "JSON helper tool (validate, pretty, compact, get)" ;;
     jyaml) echo "YAML helper tool (validate, tojson)" ;;
     jxpath) echo "XML xpath helper tool (select, exists)" ;;
-    jllmrequest) echo "LLM request tool: text in, text out (openai, ollama)" ;;
+    jllm) echo "LLM tool family based on langchain4j (request, ...)" ;;
     *) echo "jknife tool $1" ;;
     esac
 }
