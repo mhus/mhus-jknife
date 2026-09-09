@@ -19,8 +19,11 @@ package de.mhus.jknife.jllm.model;
 
 import de.mhus.jknife.jllm.config.LlmConfig;
 import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
+import dev.langchain4j.model.ollama.OllamaStreamingChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 
 import java.time.Duration;
 
@@ -38,6 +41,35 @@ public final class Llms {
         case LlmConfig.PROVIDER_OLLAMA -> ollama(config);
         default -> throw new IllegalArgumentException("Unknown llm provider: " + config.provider());
         };
+    }
+
+    /**
+     * Streaming model, used for perf measurement (ttft) and live output.
+     */
+    public static StreamingChatModel streamingChatModel(LlmConfig config) {
+        return switch (config.provider()) {
+        case LlmConfig.PROVIDER_OPENAI -> openAiStreaming(config);
+        case LlmConfig.PROVIDER_OLLAMA -> ollamaStreaming(config);
+        default -> throw new IllegalArgumentException("Unknown llm provider: " + config.provider());
+        };
+    }
+
+    private static StreamingChatModel openAiStreaming(LlmConfig config) {
+        var builder = OpenAiStreamingChatModel.builder().baseUrl(config.baseUrl()).apiKey(config.apiKey())
+                .modelName(config.model()).timeout(Duration.ofSeconds(config.timeoutSeconds()));
+        if (config.temperature() != null)
+            builder.temperature(config.temperature());
+        if (config.maxTokens() != null)
+            builder.maxTokens(config.maxTokens());
+        return builder.build();
+    }
+
+    private static StreamingChatModel ollamaStreaming(LlmConfig config) {
+        var builder = OllamaStreamingChatModel.builder().baseUrl(config.baseUrl()).modelName(config.model())
+                .timeout(Duration.ofSeconds(config.timeoutSeconds()));
+        if (config.temperature() != null)
+            builder.temperature(config.temperature());
+        return builder.build();
     }
 
     private static ChatModel openAi(LlmConfig config) {

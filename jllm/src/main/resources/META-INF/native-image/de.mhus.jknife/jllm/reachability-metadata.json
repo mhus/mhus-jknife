@@ -202,6 +202,18 @@
           ]
         },
         {
+          "name": "setDoneReason",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setEvalCount",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
           "name": "setMessage",
           "parameterTypes": [
             "dev.langchain4j.model.ollama.Message"
@@ -211,6 +223,12 @@
           "name": "setModel",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPromptEvalCount",
+          "parameterTypes": [
+            "java.lang.Integer"
           ]
         }
       ]
@@ -341,6 +359,12 @@
         {
           "name": "build",
           "parameterTypes": []
+        },
+        {
+          "name": "delta",
+          "parameterTypes": [
+            "dev.langchain4j.model.openai.internal.chat.Delta"
+          ]
         },
         {
           "name": "finishReason",
@@ -498,7 +522,23 @@
       ]
     },
     {
-      "type": "dev.langchain4j.model.openai.internal.chat.Delta$Builder"
+      "type": "dev.langchain4j.model.openai.internal.chat.Delta$Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "content",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
       "type": "dev.langchain4j.model.openai.internal.chat.FunctionCall$Builder"
@@ -553,7 +593,12 @@
       "type": "dev.langchain4j.model.openai.internal.shared.PromptTokensDetails$Builder"
     },
     {
-      "type": "dev.langchain4j.model.openai.internal.shared.StreamOptions"
+      "type": "dev.langchain4j.model.openai.internal.shared.StreamOptions",
+      "fields": [
+        {
+          "name": "includeUsage"
+        }
+      ]
     },
     {
       "type": "dev.langchain4j.model.openai.internal.shared.Usage$Builder",
@@ -1053,10 +1098,16 @@
       "glob": "META-INF/services/dev.langchain4j.model.ollama.spi.OllamaChatModelBuilderFactory"
     },
     {
+      "glob": "META-INF/services/dev.langchain4j.model.ollama.spi.OllamaStreamingChatModelBuilderFactory"
+    },
+    {
       "glob": "META-INF/services/dev.langchain4j.model.openai.internal.spi.OpenAiClientBuilderFactory"
     },
     {
       "glob": "META-INF/services/dev.langchain4j.model.openai.spi.OpenAiChatModelBuilderFactory"
+    },
+    {
+      "glob": "META-INF/services/dev.langchain4j.model.openai.spi.OpenAiStreamingChatModelBuilderFactory"
     },
     {
       "glob": "META-INF/services/dev.langchain4j.spi.json.ProviderJsonCodecFactory"

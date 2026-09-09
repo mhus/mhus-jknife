@@ -37,24 +37,44 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class JllmRequestCliTest {
 
-    /** minimal fake server speaking enough openai/ollama protocol for one request */
+    /** minimal fake server speaking enough openai/ollama protocol (non streaming and streaming) */
     static class FakeLlmServer {
 
         final HttpServer server;
         final List<String> requestBodies = new CopyOnWriteArrayList<>();
+        private final String nonStreamResponse;
+        private final String[] streamChunks; // openai: sse 'data: {...}' lines, ollama: ndjson lines
+        private final String streamContentType;
 
-        FakeLlmServer(String responseBody) throws IOException {
+        FakeLlmServer(String nonStreamResponse, String streamContentType, String... streamChunks) throws IOException {
+            this.nonStreamResponse = nonStreamResponse;
+            this.streamContentType = streamContentType;
+            this.streamChunks = streamChunks;
             server = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
             server.createContext("/", exchange -> {
                 var body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                 requestBodies.add(body);
-                var bytes = responseBody.getBytes(StandardCharsets.UTF_8);
-                exchange.getResponseHeaders().set("Content-Type", "application/json");
+                byte[] bytes;
+                if (isStreamingRequest(body)) {
+                    var buffer = new StringBuilder();
+                    for (String chunk : streamChunks) {
+                        buffer.append(chunk);
+                    }
+                    bytes = buffer.toString().getBytes(StandardCharsets.UTF_8);
+                    exchange.getResponseHeaders().set("Content-Type", streamContentType);
+                } else {
+                    bytes = nonStreamResponse.getBytes(StandardCharsets.UTF_8);
+                    exchange.getResponseHeaders().set("Content-Type", "application/json");
+                }
                 exchange.sendResponseHeaders(200, bytes.length);
                 exchange.getResponseBody().write(bytes);
                 exchange.close();
             });
             server.start();
+        }
+
+        private static boolean isStreamingRequest(String body) {
+            return body.contains("\"stream\" : true") || body.contains("\"stream\":true");
         }
 
         String baseUrl() {
@@ -90,7 +110,18 @@ class JllmRequestCliTest {
             }
             """;
 
-    private record Result(int exitCode, String out) {
+    private static final String OPENAI_STREAM_CHUNKS[] = {
+            "data: {\"id\":\"chatcmpl-test\",\"object\":\"chat.completion.chunk\",\"created\":1,\"model\":\"gpt-4o-mini\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello \"},\"finish_reason\":null}]}\n\n",
+            "data: {\"id\":\"chatcmpl-test\",\"object\":\"chat.completion.chunk\",\"created\":1,\"model\":\"gpt-4o-mini\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"world\"},\"finish_reason\":null}]}\n\n",
+            "data: {\"id\":\"chatcmpl-test\",\"object\":\"chat.completion.chunk\",\"created\":1,\"model\":\"gpt-4o-mini\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":5,\"completion_tokens\":2,\"total_tokens\":7}}\n\n",
+            "data: [DONE]\n\n" };
+
+    private static final String OLLAMA_STREAM_CHUNKS[] = {
+            "{\"model\":\"llama3.1\",\"created_at\":\"2024-09-08T12:00:00Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Hello \"},\"done\":false}\n",
+            "{\"model\":\"llama3.1\",\"created_at\":\"2024-09-08T12:00:00Z\",\"message\":{\"role\":\"assistant\",\"content\":\"world\"},\"done\":false}\n",
+            "{\"model\":\"llama3.1\",\"created_at\":\"2024-09-08T12:00:00Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done\":true,\"done_reason\":\"stop\",\"prompt_eval_count\":5,\"eval_count\":2}\n" };
+
+    private record Result(int exitCode, String out, String err) {
     }
 
     private final List<FakeLlmServer> servers = new CopyOnWriteArrayList<>();
@@ -101,25 +132,30 @@ class JllmRequestCliTest {
     }
 
     private Result run(String... args) {
-        var buffer = new ByteArrayOutputStream();
+        var outBuffer = new ByteArrayOutputStream();
+        var errBuffer = new ByteArrayOutputStream();
         var oldOut = System.out;
+        var oldErr = System.err;
         try {
-            System.setOut(new PrintStream(buffer, true, StandardCharsets.UTF_8));
+            System.setOut(new PrintStream(outBuffer, true, StandardCharsets.UTF_8));
+            System.setErr(new PrintStream(errBuffer, true, StandardCharsets.UTF_8));
             int exit = new CommandLine(new JllmCmd()).execute(args);
-            return new Result(exit, new String(buffer.toByteArray(), StandardCharsets.UTF_8));
+            return new Result(exit, new String(outBuffer.toByteArray(), StandardCharsets.UTF_8),
+                    new String(errBuffer.toByteArray(), StandardCharsets.UTF_8));
         } finally {
             System.setOut(oldOut);
+            System.setErr(oldErr);
         }
     }
 
     private FakeLlmServer startOpenAi() throws IOException {
-        var server = new FakeLlmServer(OPENAI_RESPONSE);
+        var server = new FakeLlmServer(OPENAI_RESPONSE, "text/event-stream", OPENAI_STREAM_CHUNKS);
         servers.add(server);
         return server;
     }
 
     private FakeLlmServer startOllama() throws IOException {
-        var server = new FakeLlmServer(OLLAMA_RESPONSE);
+        var server = new FakeLlmServer(OLLAMA_RESPONSE, "application/x-ndjson", OLLAMA_STREAM_CHUNKS);
         servers.add(server);
         return server;
     }
@@ -181,6 +217,49 @@ class JllmRequestCliTest {
         // server on a closed port
         var config = "{provider: ollama, model: llama3.1, baseUrl: 'http://localhost:1', timeoutSeconds: 2}";
         var r = run("request", "--llm", config, "say hello");
+        assertThat(r.exitCode()).isEqualTo(2);
+        assertThat(r.out()).isEmpty();
+    }
+
+    @Test
+    void perfOpenAiStreaming() throws Exception {
+        var server = startOpenAi();
+        var config = "{provider: openai, model: gpt-4o-mini, apiKey: test, baseUrl: '" + server.baseUrl() + "/v1'}";
+
+        var r = run("request", "--llm", config, "--perf", "say hello");
+        assertThat(r.exitCode()).isZero();
+        // streaming request was used
+        assertThat(server.requestBodies.get(0)).contains("gpt-4o-mini").contains("true");
+        // response text assembled from the chunks
+        assertThat(r.out().trim()).isEqualTo("Hello world");
+        // perf block on stderr
+        assertThat(r.err()).contains("--- performance ---");
+        assertThat(r.err()).contains("provider: openai");
+        assertThat(r.err()).contains("latency: ");
+        assertThat(r.err()).contains("ttft: ");
+        assertThat(r.err()).contains("baseUrl: ");
+    }
+
+    @Test
+    void perfOllamaStreaming() throws Exception {
+        var server = startOllama();
+        var config = "{provider: ollama, model: llama3.1, baseUrl: '" + server.baseUrl() + "'}";
+
+        var r = run("request", "--llm", config, "--perf", "say hello");
+        assertThat(r.exitCode()).isZero();
+        assertThat(r.out().trim()).isEqualTo("Hello world");
+        assertThat(r.err()).contains("provider: ollama");
+        assertThat(r.err()).contains("ttft: ");
+        // token usage from the final ollama chunk
+        assertThat(r.err()).contains("tokens: in=5 out=2");
+        assertThat(r.err()).contains("output tokens/sec: ");
+        assertThat(r.err()).contains("finish reason: ");
+    }
+
+    @Test
+    void perfErrorPath() throws Exception {
+        var config = "{provider: ollama, model: llama3.1, baseUrl: 'http://localhost:1', timeoutSeconds: 2}";
+        var r = run("request", "--llm", config, "--perf", "say hello");
         assertThat(r.exitCode()).isEqualTo(2);
         assertThat(r.out()).isEmpty();
     }

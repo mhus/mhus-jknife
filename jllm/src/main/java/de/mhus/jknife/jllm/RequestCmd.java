@@ -54,6 +54,10 @@ public class RequestCmd implements Callable<Integer> {
     @Option(names = { "--llm-config" }, paramLabel = "FILE", description = "Llm config file (yaml or json)")
     private String llmConfigFile;
 
+    @Option(names = {
+            "--perf" }, description = "Measure performance (uses streaming): ttft, latency, tokens/sec, token usage. The block is printed to stderr, the response to stdout.")
+    private boolean perf;
+
     @Override
     public Integer call() throws Exception {
         LlmConfig config;
@@ -74,27 +78,106 @@ public class RequestCmd implements Callable<Integer> {
                 "Config: provider=" + config.provider() + " model=" + config.model() + " baseUrl=" + config.baseUrl());
 
         try {
-            var model = Llms.chatModel(config);
-
             var requestBuilder = dev.langchain4j.model.chat.request.ChatRequest.builder();
             if (system != null && !system.isBlank())
                 requestBuilder.messages(SystemMessage.from(system), UserMessage.from(prompt));
             else
                 requestBuilder.messages(UserMessage.from(prompt));
 
-            ChatResponse response = model.chat(requestBuilder.build());
+            if (perf)
+                return runPerf(config, requestBuilder.build());
+
+            ChatResponse response = Llms.chatModel(config).chat(requestBuilder.build());
             var aiMessage = response.aiMessage();
             String text = aiMessage == null ? null : aiMessage.text();
             if (text == null || text.isBlank()) {
                 System.err.println("Empty response from model " + config.model());
                 return 2;
             }
+            verboseMetadata(response);
             System.out.println(text);
             return 0;
         } catch (RuntimeException e) {
             System.err.println("Llm request failed: " + firstLine(e.getMessage()));
             input.verbose(e.toString());
             return 2;
+        }
+    }
+
+    private void verboseMetadata(ChatResponse response) {
+        var metadata = response == null ? null : response.metadata();
+        if (metadata == null)
+            return;
+        var usage = metadata.tokenUsage();
+        if (usage != null)
+            input.verbose("Tokens: in=" + usage.inputTokenCount() + " out=" + usage.outputTokenCount() + " total="
+                    + usage.totalTokenCount());
+        if (metadata.finishReason() != null)
+            input.verbose("Finish reason: " + metadata.finishReason());
+        if (metadata.modelName() != null)
+            input.verbose("Response model: " + metadata.modelName());
+    }
+
+    private Integer runPerf(LlmConfig config, dev.langchain4j.model.chat.request.ChatRequest request)
+            throws InterruptedException {
+        var runner = new StreamingRunner();
+        try {
+            Llms.streamingChatModel(config).chat(request, runner);
+        } catch (RuntimeException e) {
+            System.err.println("Llm request failed: " + firstLine(e.getMessage()));
+            return 2;
+        }
+
+        var result = runner.await(config.timeoutSeconds());
+        if (result.error() != null) {
+            System.err.println("Llm request failed: " + firstLine(result.error().getMessage()));
+            input.verbose(result.error().toString());
+            return 2;
+        }
+
+        if (result.text() == null || result.text().isBlank()) {
+            System.err.println("Empty response from model " + config.model());
+            return 2;
+        }
+        System.out.println(result.text());
+        printPerfBlock(config, result);
+        return 0;
+    }
+
+    private void printPerfBlock(LlmConfig config, StreamingRunner.Result result) {
+        var err = System.err;
+        err.println("--- performance ---");
+        err.println("provider: " + config.provider());
+        err.println("model: " + config.model());
+        err.println("baseUrl: " + config.baseUrl());
+        err.println("params: temperature=" + config.temperature() + " maxTokens=" + config.maxTokens() + " timeout="
+                + config.timeoutSeconds() + "s");
+
+        double totalSeconds = result.totalNanos() / 1_000_000_000.0;
+        err.println("latency: " + String.format("%.3fs", totalSeconds));
+        if (result.ttftNanos() >= 0)
+            err.println("ttft: " + String.format("%.3fs", result.ttftNanos() / 1_000_000_000.0));
+        else
+            err.println("ttft: n/a");
+
+        double generationSeconds = Math.max(0, result.totalNanos() - Math.max(0, result.ttftNanos())) / 1_000_000_000.0;
+
+        var metadata = result.response() == null ? null : result.response().metadata();
+        var usage = metadata == null ? null : metadata.tokenUsage();
+        if (usage != null) {
+            err.println("tokens: in=" + usage.inputTokenCount() + " out=" + usage.outputTokenCount() + " total="
+                    + usage.totalTokenCount());
+            if (usage.outputTokenCount() != null && usage.outputTokenCount() > 0 && generationSeconds > 0)
+                err.println(
+                        "output tokens/sec: " + String.format("%.1f", usage.outputTokenCount() / generationSeconds));
+        }
+        if (metadata != null) {
+            if (metadata.finishReason() != null)
+                err.println("finish reason: " + metadata.finishReason());
+            if (metadata.modelName() != null && !metadata.modelName().isBlank())
+                err.println("response model: " + metadata.modelName());
+            if (metadata.id() != null)
+                err.println("response id: " + metadata.id());
         }
     }
 
