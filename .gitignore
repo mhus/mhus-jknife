@@ -46,3 +46,6 @@ dist/
 
 # stray native test binaries
 *.jxpathcmd
+
+# local secrets, never commit
+confidential/
