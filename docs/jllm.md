@@ -9,21 +9,46 @@ commands are added as subcommands.
 ## Usage
 
 ```
-jllm request [options] [prompt]    # text in, text out
+jllm ask [options] [prompt]         # high level: complete response (no streaming)
+jllm stream [options] [prompt]      # high level: tokens live as they arrive
+jllm request [options] [body]       # raw: provider json passthrough, curl for llms
 ```
+
+## ask vs stream vs request
+
+| | `ask` | `stream` | `request` |
+| --- | --- | --- | --- |
+| input | prompt (arg/stdin) | prompt (arg/stdin) | provider json (arg/stdin) |
+| output | response text when complete | tokens live | raw response bytes, as they arrive |
+| langchain4j | `ChatModel` | `StreamingChatModel` | none (plain http) |
+| extras | `-v` metadata | `--perf` measurement | byte exact, sse passthrough |
+
+Streaming is a genuinely different process in langchain4j (separate interfaces,
+separate model classes, different wire protocol) — hence separate subcommands.
 
 ## Examples
 
 ```shell
-jllm request --llm '{provider: ollama, model: llama3.1}' "explain quantum computing"
+jllm ask --llm '{provider: ollama, model: llama3.1}' "explain quantum computing"
+jllm ask --llm-config llm.yaml --system "You are a pirate." "say hello"
 
-echo "translate to german: hello" | jllm request --llm-config llm.yaml
+# live tokens while the model writes
+jllm stream --llm-config llm.yaml "write a poem"
 
-# system prompt
-jllm request --llm-config llm.yaml --system "You are a pirate." "say hello"
+# with performance measurement (block on stderr)
+jllm stream --llm-config llm.yaml --perf "write a haiku"
 
-# openai (api key from env OPENAI_API_KEY or config)
-jllm request --llm '{provider: openai, model: gpt-4o-mini}' "hi"
+# raw: send the openai chat completion json directly, response passthrough
+jllm request --llm-config llm.yaml << 'EOF'
+{"model": "gpt-4o-mini", "messages": [{"role": "user", "content": "hi"}]}
+EOF
+
+# raw with streaming: "stream": true makes the provider answer with a live
+# sse/ndjson stream, which is passed through chunk by chunk
+echo '{"model":"llama3.1","messages":[...],"stream":true}' | jllm request --llm-config ollam.yaml
+
+# openai api key from env OPENAI_API_KEY or config
+jllm ask --llm '{provider: openai, model: gpt-4o-mini}' "hi"
 ```
 
 ## LLM configuration
@@ -47,56 +72,47 @@ timeoutSeconds: 60      # optional
 Defaults: `baseUrl` `https://api.openai.com/v1` (openai) or
 `http://localhost:11434` (ollama), `timeoutSeconds` 60.
 
-Config file + inline override example:
+`request` uses only `provider`, `baseUrl`, `apiKey` and `timeoutSeconds` from the
+config — the rest comes from the json body you send. Endpoints: openai
+`<baseUrl>/chat/completions` (with `Authorization: Bearer <apiKey>`), ollama
+`<baseUrl>/api/chat`.
 
-```shell
-jllm request --llm-config llm.yaml --llm '{model: gpt-4o}' "hi"
+## Performance measurement (stream)
+
+`jllm stream --perf` uses the streaming internals to measure and prints a block to
+stderr — the tokens still go to stdout, so the output stays script friendly:
+
+```
+--- performance ---
+provider: openai
+model: gpt-4o-mini
+baseUrl: https://api.openai.com/v1
+params: temperature=null maxTokens=null timeout=60s
+latency: 1.234s
+ttft: 0.412s
+tokens: in=5 out=12 total=17
+output tokens/sec: 14.1
+finish reason: STOP
+response model: gpt-4o-mini
+response id: chatcmpl-abc123
 ```
 
-## Options (request)
+`ttft` is the time to first token, `tokens` the token usage reported by the provider
+(when available) and `output tokens/sec` is derived from both.
+
+`ask -v` prints token usage, finish reason and response model after the answer.
+
+## Options
 
 - `--llm CONFIG` inline llm config (yaml or json), merged over `--llm-config`
 - `--llm-config FILE` llm config file (yaml or json)
-- `--system TEXT` system prompt / instruction
-- `--perf` measure performance (see below)
+- `ask`/`stream`: `--system TEXT` system prompt
+- `stream`: `--perf` performance block (see above)
 - `-t, --text-file FILE`, `-c, --charset`, `-v, --verbose` common input options
   (see [jregex](jregex.md))
 
-Exit codes: `0` success, `2` error (missing/invalid config, empty prompt, request
-failure).
-
-## Performance measurement
-
-Two levels:
-
-- `-v, --verbose` prints the resolved config and, after the response, the metadata
-  the model returned (token usage, finish reason, response model) to stderr.
-- `--perf` measures the request: it uses **streaming** internally to get the
-  **ttft** (time to first token) and prints a measurement block to stderr — the
-  response text still goes to stdout, so the output stays script friendly:
-
-  ```shell
-  jllm request --llm-config llm.yaml --perf "write a haiku"
-  # --- performance ---
-  # provider: openai
-  # model: gpt-4o-mini
-  # baseUrl: https://api.openai.com/v1
-  # params: temperature=null maxTokens=null timeout=60s
-  # latency: 1.234s
-  # ttft: 0.412s
-  # tokens: in=5 out=12 total=17
-  # output tokens/sec: 14.1
-  # finish reason: STOP
-  # response model: gpt-4o-mini
-  # response id: chatcmpl-abc123
-  ```
-
-  `latency` is the total time, `ttft` the time until the first token arrived,
-  `tokens` the token usage reported by the provider (when available) and
-  `output tokens/sec` is derived from both.
-
-Both providers are supported: for openai the sse stream is used, for ollama the
-ndjson stream.
+Exit codes: `0` success, `2` error (missing/invalid config, empty prompt/body,
+request failure, http error status).
 
 ## Install
 

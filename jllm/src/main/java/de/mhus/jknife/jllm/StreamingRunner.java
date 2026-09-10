@@ -22,10 +22,11 @@ import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
- * Runs a streaming chat request, measures ttft (time to first token) and total latency and collects the full response
- * text.
+ * Runs a streaming chat request, measures ttft (time to first token) and total latency, optionally prints tokens live
+ * and collects the full response text.
  */
 final class StreamingRunner implements StreamingChatResponseHandler {
 
@@ -35,14 +36,25 @@ final class StreamingRunner implements StreamingChatResponseHandler {
     private final long startNanos = System.nanoTime();
     private final CountDownLatch latch = new CountDownLatch(1);
     private final StringBuilder text = new StringBuilder();
+    private final Consumer<String> onToken;
     private volatile long ttftNanos = -1;
     private volatile ChatResponse response;
     private volatile Throwable error;
+
+    /**
+     * @param onToken
+     *            optional live consumer for each partial token
+     */
+    StreamingRunner(Consumer<String> onToken) {
+        this.onToken = onToken;
+    }
 
     @Override
     public void onPartialResponse(String partial) {
         if (ttftNanos < 0)
             ttftNanos = System.nanoTime() - startNanos;
+        if (onToken != null)
+            onToken.accept(partial);
         synchronized (text) {
             text.append(partial);
         }

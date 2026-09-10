@@ -54,35 +54,44 @@ public class NativeImageAgentHarness {
         // non streaming
         var openAi = start(OPENAI_NON_STREAM, "text/event-stream", OPENAI_STREAM);
         try {
-            new picocli.CommandLine(new JllmCmd()).execute("request", "--llm",
+            new picocli.CommandLine(new JllmCmd()).execute("ask", "--llm",
                     "{provider: openai, model: gpt-4o-mini, apiKey: test, baseUrl: 'http://localhost:"
                             + openAi.getAddress().getPort() + "/v1', temperature: 0.7, maxTokens: 100}",
                     "--system", "system prompt", "harness prompt");
-            // streaming (perf) path
-            new picocli.CommandLine(new JllmCmd()).execute("request", "--llm",
+            // streaming path (live tokens + perf)
+            new picocli.CommandLine(new JllmCmd()).execute("stream", "--llm",
                     "{provider: openai, model: gpt-4o-mini, apiKey: test, baseUrl: 'http://localhost:"
                             + openAi.getAddress().getPort() + "/v1'}",
                     "--perf", "harness prompt");
+            // raw request passthrough (jdk http client)
+            new picocli.CommandLine(new JllmCmd()).execute("request", "--llm",
+                    "{provider: openai, model: gpt-4o-mini, apiKey: test, baseUrl: 'http://localhost:"
+                            + openAi.getAddress().getPort() + "/v1'}",
+                    "{\"model\":\"gpt-4o-mini\",\"messages\":[],\"stream\":true}");
         } finally {
             openAi.stop(0);
         }
 
         var ollama = start(OLLAMA_NON_STREAM, "application/x-ndjson", OLLAMA_STREAM);
         try {
-            new picocli.CommandLine(new JllmCmd()).execute("request", "--llm",
+            new picocli.CommandLine(new JllmCmd()).execute("ask", "--llm",
                     "{provider: ollama, model: llama3.1, baseUrl: 'http://localhost:" + ollama.getAddress().getPort()
                             + "'}",
                     "harness prompt");
-            new picocli.CommandLine(new JllmCmd()).execute("request", "--llm",
+            new picocli.CommandLine(new JllmCmd()).execute("stream", "--llm",
                     "{provider: ollama, model: llama3.1, baseUrl: 'http://localhost:" + ollama.getAddress().getPort()
                             + "'}",
                     "--perf", "harness prompt");
+            new picocli.CommandLine(new JllmCmd()).execute(
+                    "request", "--llm", "{provider: ollama, model: llama3.1, baseUrl: 'http://localhost:"
+                            + ollama.getAddress().getPort() + "'}",
+                    "{\"model\":\"llama3.1\",\"messages\":[],\"stream\":true}");
         } finally {
             ollama.stop(0);
         }
 
         // error path (connection refused)
-        new picocli.CommandLine(new JllmCmd()).execute("request", "--llm",
+        new picocli.CommandLine(new JllmCmd()).execute("ask", "--llm",
                 "{provider: ollama, model: llama3.1, baseUrl: 'http://localhost:1', timeoutSeconds: 1}",
                 "harness prompt");
 

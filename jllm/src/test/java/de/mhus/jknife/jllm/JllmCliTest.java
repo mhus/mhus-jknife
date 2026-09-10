@@ -42,6 +42,7 @@ class JllmRequestCliTest {
 
         final HttpServer server;
         final List<String> requestBodies = new CopyOnWriteArrayList<>();
+        final List<String> authorizationHeaders = new CopyOnWriteArrayList<>();
         private final String nonStreamResponse;
         private final String[] streamChunks; // openai: sse 'data: {...}' lines, ollama: ndjson lines
         private final String streamContentType;
@@ -54,6 +55,7 @@ class JllmRequestCliTest {
             server.createContext("/", exchange -> {
                 var body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                 requestBodies.add(body);
+                authorizationHeaders.add(exchange.getRequestHeaders().getFirst("Authorization"));
                 byte[] bytes;
                 if (isStreamingRequest(body)) {
                     var buffer = new StringBuilder();
@@ -161,11 +163,11 @@ class JllmRequestCliTest {
     }
 
     @Test
-    void requestOpenAi() throws Exception {
+    void askOpenAi() throws Exception {
         var server = startOpenAi();
         var config = "{provider: openai, model: gpt-4o-mini, apiKey: test, baseUrl: '" + server.baseUrl() + "/v1'}";
 
-        var r = run("request", "--llm", config, "say hello");
+        var r = run("ask", "--llm", config, "say hello");
         assertThat(r.exitCode()).isZero();
         assertThat(r.out().trim()).isEqualTo("Hello from fake openai!");
 
@@ -175,28 +177,28 @@ class JllmRequestCliTest {
     }
 
     @Test
-    void requestOpenAiWithSystemPrompt() throws Exception {
+    void askOpenAiWithSystemPrompt() throws Exception {
         var server = startOpenAi();
         var config = "{provider: openai, model: gpt-4o-mini, apiKey: test, baseUrl: '" + server.baseUrl() + "/v1'}";
 
-        var r = run("request", "--llm", config, "--system", "You are a pirate.", "say hello");
+        var r = run("ask", "--llm", config, "--system", "You are a pirate.", "say hello");
         assertThat(r.exitCode()).isZero();
         assertThat(server.requestBodies.get(0)).contains("You are a pirate.").contains("system");
     }
 
     @Test
-    void requestOllama() throws Exception {
+    void askOllama() throws Exception {
         var server = startOllama();
         var config = "{provider: ollama, model: llama3.1, baseUrl: '" + server.baseUrl() + "'}";
 
-        var r = run("request", "--llm", config, "say hello");
+        var r = run("ask", "--llm", config, "say hello");
         assertThat(r.exitCode()).isZero();
         assertThat(r.out().trim()).isEqualTo("Hello from fake ollama!");
         assertThat(server.requestBodies.get(0)).contains("llama3.1").contains("say hello");
     }
 
     @Test
-    void requestWithConfigFileAndInlineOverride() throws Exception {
+    void askWithConfigFileAndInlineOverride() throws Exception {
         var server = startOpenAi();
         var file = java.nio.file.Files.createTempFile("llm", ".yaml");
         java.nio.file.Files.writeString(file, """
@@ -207,7 +209,7 @@ class JllmRequestCliTest {
                 """.formatted(server.baseUrl()));
 
         // inline config overrides the model only
-        var r = run("request", "--llm-config", file.toString(), "--llm", "{model: gpt-4o-mini}", "say hello");
+        var r = run("ask", "--llm-config", file.toString(), "--llm", "{model: gpt-4o-mini}", "say hello");
         assertThat(r.exitCode()).isZero();
         assertThat(server.requestBodies.get(0)).contains("gpt-4o-mini");
     }
@@ -216,17 +218,17 @@ class JllmRequestCliTest {
     void connectionFailure() throws Exception {
         // server on a closed port
         var config = "{provider: ollama, model: llama3.1, baseUrl: 'http://localhost:1', timeoutSeconds: 2}";
-        var r = run("request", "--llm", config, "say hello");
+        var r = run("ask", "--llm", config, "say hello");
         assertThat(r.exitCode()).isEqualTo(2);
         assertThat(r.out()).isEmpty();
     }
 
     @Test
-    void perfOpenAiStreaming() throws Exception {
+    void streamOpenAi() throws Exception {
         var server = startOpenAi();
         var config = "{provider: openai, model: gpt-4o-mini, apiKey: test, baseUrl: '" + server.baseUrl() + "/v1'}";
 
-        var r = run("request", "--llm", config, "--perf", "say hello");
+        var r = run("stream", "--llm", config, "--perf", "say hello");
         assertThat(r.exitCode()).isZero();
         // streaming request was used
         assertThat(server.requestBodies.get(0)).contains("gpt-4o-mini").contains("true");
@@ -241,11 +243,11 @@ class JllmRequestCliTest {
     }
 
     @Test
-    void perfOllamaStreaming() throws Exception {
+    void streamOllama() throws Exception {
         var server = startOllama();
         var config = "{provider: ollama, model: llama3.1, baseUrl: '" + server.baseUrl() + "'}";
 
-        var r = run("request", "--llm", config, "--perf", "say hello");
+        var r = run("stream", "--llm", config, "--perf", "say hello");
         assertThat(r.exitCode()).isZero();
         assertThat(r.out().trim()).isEqualTo("Hello world");
         assertThat(r.err()).contains("provider: ollama");
@@ -257,20 +259,90 @@ class JllmRequestCliTest {
     }
 
     @Test
-    void perfErrorPath() throws Exception {
+    void streamErrorPath() throws Exception {
         var config = "{provider: ollama, model: llama3.1, baseUrl: 'http://localhost:1', timeoutSeconds: 2}";
-        var r = run("request", "--llm", config, "--perf", "say hello");
+        var r = run("stream", "--llm", config, "--perf", "say hello");
         assertThat(r.exitCode()).isEqualTo(2);
         assertThat(r.out()).isEmpty();
     }
 
     @Test
+    void rawRequestOpenAiPassthrough() throws Exception {
+        var server = startOpenAi();
+        var config = "{provider: openai, model: gpt-4o-mini, apiKey: test-key, baseUrl: '" + server.baseUrl() + "/v1'}";
+        var rawJson = "{\"model\":\"gpt-4o-mini\",\"messages\":[{\"role\":\"user\",\"content\":\"raw hello\"}]}";
+
+        var r = run("request", "--llm", config, rawJson);
+        assertThat(r.exitCode()).isZero();
+        // body passed through exactly as given
+        assertThat(server.requestBodies.get(0)).isEqualTo(rawJson);
+        // bearer auth was sent
+        assertThat(server.authorizationHeaders.get(0)).isEqualTo("Bearer test-key");
+        // raw response passed through byte for byte (no newline added)
+        assertThat(r.out()).isEqualTo(OPENAI_RESPONSE);
+    }
+
+    @Test
+    void rawRequestOllamaStreamingPassthrough() throws Exception {
+        var server = startOllama();
+        var config = "{provider: ollama, model: llama3.1, baseUrl: '" + server.baseUrl() + "'}";
+
+        var r = run("request", "--llm", config, "{\"model\":\"llama3.1\",\"messages\":[],\"stream\":true}");
+        assertThat(r.exitCode()).isZero();
+        // stream:true -> the ndjson stream is passed through raw, chunk by chunk
+        assertThat(r.out()).contains("\"done\":false").contains("\"done\":true");
+    }
+
+    @Test
+    void rawRequestHttpError() throws Exception {
+        var errorServer = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
+        errorServer.createContext("/", exchange -> {
+            exchange.getRequestBody().readAllBytes();
+            var bytes = "{\"error\":\"boom\"}".getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().set("Content-Type", "application/json");
+            exchange.sendResponseHeaders(500, bytes.length);
+            exchange.getResponseBody().write(bytes);
+            exchange.close();
+        });
+        errorServer.start();
+        try {
+            var config = "{provider: ollama, model: llama3.1, baseUrl: 'http://localhost:"
+                    + errorServer.getAddress().getPort() + "'}";
+            var r = run("request", "--llm", config, "{}");
+            assertThat(r.exitCode()).isEqualTo(2);
+            assertThat(r.err()).contains("HTTP 500").contains("boom");
+            assertThat(r.out()).isEmpty();
+        } finally {
+            errorServer.stop(0);
+        }
+    }
+
+    @Test
+    void rawRequestFromStdinAndEmpty() throws Exception {
+        var server = startOllama();
+        var config = "{provider: ollama, model: llama3.1, baseUrl: '" + server.baseUrl() + "'}";
+
+        var oldIn = System.in;
+        try {
+            System.setIn(new java.io.ByteArrayInputStream("{\"raw\":true}".getBytes(StandardCharsets.UTF_8)));
+            var r = run("request", "--llm", config);
+            assertThat(r.exitCode()).isZero();
+            assertThat(server.requestBodies.get(0)).isEqualTo("{\"raw\":true}");
+        } finally {
+            System.setIn(oldIn);
+        }
+
+        // empty body
+        assertThat(run("request", "--llm", config, "").exitCode()).isEqualTo(2);
+    }
+
+    @Test
     void missingConfigAndEmptyPrompt() throws Exception {
-        assertThat(run("request", "say hello").exitCode()).isEqualTo(2);
+        assertThat(run("ask", "say hello").exitCode()).isEqualTo(2);
 
         var server = startOllama();
         var config = "{provider: ollama, model: llama3.1, baseUrl: '" + server.baseUrl() + "'}";
-        assertThat(run("request", "--llm", config, "").exitCode()).isEqualTo(2);
-        assertThat(run("request", "--llm", "{invalid", "hi").exitCode()).isEqualTo(2);
+        assertThat(run("ask", "--llm", config, "").exitCode()).isEqualTo(2);
+        assertThat(run("ask", "--llm", "{invalid", "hi").exitCode()).isEqualTo(2);
     }
 }
