@@ -12,16 +12,17 @@ commands are added as subcommands.
 jllm ask [options] [prompt]         # high level: complete response (no streaming)
 jllm stream [options] [prompt]      # high level: tokens live as they arrive
 jllm request [options] [body]       # raw: provider json passthrough, curl for llms
+jllm models [options] [model]       # discovery: list models or show model details
 ```
 
 ## ask vs stream vs request
 
-| | `ask` | `stream` | `request` |
-| --- | --- | --- | --- |
-| input | prompt (arg/stdin) | prompt (arg/stdin) | provider json (arg/stdin) |
-| output | response text when complete | tokens live | raw response bytes, as they arrive |
-| langchain4j | `ChatModel` | `StreamingChatModel` | none (plain http) |
-| extras | `-v` metadata | `--perf` measurement | byte exact, sse passthrough |
+| | `ask` | `stream` | `request` | `models` |
+| --- | --- | --- | --- | --- |
+| input | prompt (arg/stdin) | prompt (arg/stdin) | provider json (arg/stdin) | optional model name |
+| output | response text when complete | tokens live | raw response bytes, as they arrive | model list / pretty json |
+| langchain4j | `ChatModel` | `StreamingChatModel` | none (plain http) | none (plain http) |
+| extras | `-v` metadata | `--perf` measurement | byte exact, sse passthrough | `-v` details, `--raw` passthrough |
 
 Streaming is a genuinely different process in langchain4j (separate interfaces,
 separate model classes, different wire protocol) — hence separate subcommands.
@@ -50,6 +51,23 @@ echo '{"model":"llama3.1","messages":[...],"stream":true}' | jllm request --llm-
 # openai api key from env OPENAI_API_KEY or config
 jllm ask --llm '{provider: openai, model: gpt-4o-mini}' "hi"
 ```
+
+## Model discovery
+
+```shell
+jllm models --llm-config ollam.yaml          # list models, one per line
+jllm models --llm-config ollam.yaml -v       # with details
+# llama3.1:latest | family=llama | params=8.0B | quant=Q4_K_M | size=4.6GB
+
+jllm models --llm-config ollam.yaml llama3.1:latest   # details of one model (pretty json)
+jllm models --llm-config openai.yaml gpt-4o-mini
+jllm models --llm-config ollam.yaml --raw             # raw endpoint response
+```
+
+Endpoints used: openai `GET <baseUrl>/models` and `GET <baseUrl>/models/{model}`;
+ollama `GET <baseUrl>/api/tags` and `POST <baseUrl>/api/show`. Like `request`, the
+`models` command uses only `provider`, `baseUrl`, `apiKey` and `timeoutSeconds` from
+the config.
 
 ## LLM configuration
 

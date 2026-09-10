@@ -25,11 +25,11 @@ import java.util.concurrent.Callable;
 /**
  * jllm - LLM tool family (based on langchain4j, providers: openai, ollama).
  *
- * Subcommands: ask (complete response), stream (live tokens), request (raw json passthrough).
+ * Subcommands: ask (complete response), stream (live tokens), request (raw json passthrough), models (discovery).
  */
 @Command(name = "jllm", mixinStandardHelpOptions = true, version = "jllm "
         + JllmCmd.VERSION, description = "LLM tool family based on langchain4j (providers: openai, ollama).", subcommands = {
-                CommandLine.HelpCommand.class, AskCmd.class, StreamCmd.class, RequestCmd.class })
+                CommandLine.HelpCommand.class, AskCmd.class, StreamCmd.class, RequestCmd.class, ModelsCmd.class })
 public class JllmCmd implements Callable<Integer> {
 
     /** keep in sync with the maven project version */
