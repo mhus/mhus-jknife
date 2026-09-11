@@ -19,6 +19,7 @@ startup.
 | `jyaml`   | YAML helper (validate, tojson)                                  | [jyaml.md](jyaml.md)                         |
 | `jxpath`  | XML xpath helper (select, exists)                                | [jxpath.md](jxpath.md)                       |
 | `jllm`    | LLM tool family (request: text in, text out; openai, ollama) | [jllm.md](jllm.md)                           |
+| `jsec`    | Security: hash, keys, encrypt/decrypt, sign/verify                | [jsec.md](jsec.md)                           |
 
 ## Install
 

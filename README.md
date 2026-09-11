@@ -24,10 +24,16 @@ with instant startup.
 
 | Tool    | Description                                                 | Status  |
 | ------- | ----------------------------------------------------------- | ------- |
-| `jllm`  | LLM tool family (langchain4j): `request` = text in, text out | ready   |
+| `jllm`  | LLM tool family (langchain4j): `ask`, `stream`, `request`, `models` | ready   |
 
 The llm family is a single binary with subcommands (so the ~55 MB langchain4j runtime
 is paid only once). New llm commands are added as subcommands to `jllm`.
+
+### Security family
+
+| Tool   | Description                                                                    | Status  |
+| ------ | ------------------------------------------------------------------------------ | ------- |
+| `jsec` | Security (hash, keys, encrypt/decrypt, sign/verify) — java security framework | ready   |
 
 Tool documentation: [docs/](docs/) — also served as GitHub Pages at <https://jknife.mhus.de>.
 

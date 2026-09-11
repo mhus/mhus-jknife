@@ -56,6 +56,7 @@ jobs:
           jyaml=jyaml/target/jyaml-$VERSION
           jxpath=jxpath/target/jxpath-$VERSION
           jllm=jllm/target/jllm-$VERSION
+          jsec=jsec/target/jsec-$VERSION
 
           $jregex --version
           echo 'a 12 b 345 c' | $jregex find '\d+' | grep -qx 12
@@ -91,12 +92,17 @@ jobs:
           $jllm --version
           if $jllm request 'hi' >/dev/null 2>&1; then echo "jllm should fail without config"; exit 1; fi
 
+          $jsec --version
+          $jsec hash x | grep -qx 2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881
+          JSEC_KEY=$($jsec create secret -s 256)
+          echo hi | $jsec encrypt --key "$JSEC_KEY" | $jsec decrypt --key "$JSEC_KEY" | grep -qx hi
+
           echo "smoke tests OK"
 
       - name: Package artifacts
         run: |
           # one tar.gz per tool, binary inside a 'bin' folder
-          for TOOL in jregex jbase64 juuid jtime jperiod jjson jyaml jxpath jllm; do
+          for TOOL in jregex jbase64 juuid jtime jperiod jjson jyaml jxpath jllm jsec; do
             mkdir -p dist/$TOOL
             cp $TOOL/target/$TOOL-$VERSION dist/$TOOL/$TOOL
             tar -czf $TOOL-$VERSION-${{ matrix.rid }}.tar.gz -C dist $TOOL

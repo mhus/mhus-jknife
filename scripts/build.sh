@@ -89,6 +89,12 @@ smoke_test() {
         "$bin" --version >/dev/null || fail "$tool --version"
         if "$bin" request 'hi' >/dev/null 2>&1; then fail "$tool request should fail without config"; fi
         ;;
+    jsec)
+        "$bin" --version >/dev/null || fail "$tool --version"
+        "$bin" hash x | grep -qx 2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881 || fail "$tool hash"
+        local key="$("$bin" create secret -s 256)"
+        echo hi | "$bin" encrypt --key "$key" | "$bin" decrypt --key "$key" | grep -qx hi || fail "$tool encrypt/decrypt"
+        ;;
     esac
     echo "    $tool OK"
 }
