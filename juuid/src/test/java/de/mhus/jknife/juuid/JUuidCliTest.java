@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -88,8 +89,8 @@ class JUuidCliTest {
         assertThat(r.exitCode()).isZero();
         assertThat(r.out()).contains("version: 7");
         assertThat(r.out()).contains("variant: 2 (RFC 4122 / RFC 9562)");
-        assertThat(r.out()).contains("timestamp: "
-                + Instant.ofEpochMilli(UuidUtil.v7Timestamp(uuid).toEpochMilli()).toString().replace("Z", "Z"));
+        assertThat(r.out()).contains("timestamp: " + UuidUtil.v7Timestamp(uuid).atOffset(ZoneOffset.UTC)
+                .format(java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME));
     }
 
     @Test
