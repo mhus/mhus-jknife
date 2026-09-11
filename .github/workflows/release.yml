@@ -29,9 +29,10 @@ jobs:
 
       - uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '21'
+          # must match the local development GraalVM (see readme/development.md):
+          # recorded native-image metadata (e.g. jxpath, jllm) is jdk-version specific
+          java-version: '25'
           distribution: 'graalvm'
-          components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set release version

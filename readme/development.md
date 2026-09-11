@@ -5,7 +5,9 @@
 - JDK 21+ (for build and tests)
 - Maven 3.9+
 - [GraalVM](https://www.graalvm.org/) with `native-image` (only for native builds,
-  e.g. via [sdkman](https://sdkman.io/): `sdk install java 21.0.5-graal`)
+  e.g. via [sdkman](https://sdkman.io/): `sdk install java 25.0.3-graal`). Important: use
+  the **same GraalVM version as the release CI** (see the release workflow) — the
+  recorded native-image metadata (jxpath, jllm) is specific to the jdk version.
 
 ## Build & test
 
