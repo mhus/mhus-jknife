@@ -22,7 +22,7 @@
     <parent>
         <artifactId>jknife</artifactId>
         <groupId>de.mhus.jknife</groupId>
-        <version>0.2.0</version>
+        <version>0.3.0</version>
     </parent>
     <artifactId>jxpath</artifactId>
     <packaging>jar</packaging>
